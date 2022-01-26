@@ -1,27 +1,28 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { StyleSheet} from 'react-native'
 import {createDrawerNavigator} from '@react-navigation/drawer'
 import {colors} from '../GlobalStyle/styles'
 import {Icon} from 'react-native-elements'
-import DrawerContent from '../Components/DrawerContent'
-import Home_Moderator from '../Screens/Home_Moderator'
+// Mechanic
+import DrawerContent_Mechanic from '../Components/DrawerContent_Mechanic'
+import Home_Mechanic from '../Screens/Mechanic/Home_Mechanic'
 
 
 const Drawer = createDrawerNavigator()
+const DrawerNavigator_Mechanic = () => {
 
-const DrawerNavigator = () => {
+
     return (
         <Drawer.Navigator
-            drawerContent={props => <DrawerContent {...props} /> }
-        
+            drawerContent={props => <DrawerContent_Mechanic {...props} /> }
         >
 
             <Drawer.Screen 
-                name = "Home_Moderator"
-                component = {Home_Moderator}
+                name = "Home_Mechanic"
+                component = {Home_Mechanic}
                 options={{
                     headerShown: false,
-                    title: 'Business console',
+                    title: 'Profile',
                     drawerIcon: ({focussed, size}) =>  (
                         <Icon 
                             type = "material"
@@ -32,10 +33,16 @@ const DrawerNavigator = () => {
                     )
                 }}
             />
-        </Drawer.Navigator>
+
+            
+
+
+            </Drawer.Navigator>
+
+            
     )
 }
 
-export default DrawerNavigator
+export default DrawerNavigator_Mechanic
 
 const styles = StyleSheet.create({})

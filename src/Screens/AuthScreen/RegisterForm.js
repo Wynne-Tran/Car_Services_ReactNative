@@ -7,18 +7,20 @@ import {Formik} from 'formik'
 
 const initialValues = {fullname: '', username: "", email: "", password: "", confirmPass: ""}
 
-export default function RegisterForm ({navigation}) {
+export default function RegisterForm ({navigation, route}) {
 
     const[textInput2Fossued, setTextInput2Fossued] = useState(false)
     const [passwordFocussed, setPassorFocussed] = useState(false)
     const [passwordBlurded, setPasswordBlurded] = useState(false)
+  
+
 
 
     return (
         <ImageBackground source={require('../../../assets/images/Landing.png')}  style={styles.background}>
             <ScrollView style={styles.container}>
                 <StatusBar style="auto" />
-                <Formik initialValues = {initialValues} onSubmit = {(values) => {confirmPass(values)}}>
+                <Formik initialValues = {initialValues} onSubmit = {() => {}}>
                 {
                     (props) => (
                     <View style = {styles.greeting}>
@@ -131,7 +133,7 @@ export default function RegisterForm ({navigation}) {
                                 title = "Register"
                                 buttonStyle = {styles.buttonSignIn}
                                 titleStyle = {parameters.buttonTitle}
-                                onPress={()=> navigation.navigate("Home_Moderator")}
+                                onPress={()=> navigation.navigate(route.params.role)}
                             />
                         </View>
 

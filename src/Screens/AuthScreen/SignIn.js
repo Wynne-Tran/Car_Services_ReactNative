@@ -80,7 +80,7 @@ export default function SignIn ({navigation}) {
                             title = "LogIn"
                             buttonStyle = {styles.buttonSignIn}
                             titleStyle = {parameters.buttonTitle}
-                            onPress={() => navigation.navigate("DrawerNavigator")}
+                            onPress={() => navigation.navigate("DrawerNavigator_Moderator")}
                             
                         />
                     </View>

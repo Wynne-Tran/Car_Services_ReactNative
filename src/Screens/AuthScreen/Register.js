@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { StyleSheet, StatusBar, View, ImageBackground} from 'react-native';
 import { Icon, Button} from 'react-native-elements';
 
 
 const Register = ({navigation}) => {
+    const [role, setRole] = useState()
     return (
 
        <View style={styles.container}>
@@ -16,7 +17,7 @@ const Register = ({navigation}) => {
                             title = "Moderator"
                             buttonStyle = {styles.button}
                             titleStyle = {{color: "#1B82A3", fontWeight: 'bold', fontSize: 34}}
-                            onPress = {() => {navigation.navigate("RegisterForm")}}
+                            onPress = {() => {navigation.navigate("RegisterForm", {role: "DrawerNavigator_Moderator"})}}
                         />
                     </View>
                     
@@ -25,7 +26,7 @@ const Register = ({navigation}) => {
                             title = "Customer"
                             buttonStyle = {styles.button}
                             titleStyle = {{color: "#1B82A3", fontWeight: 'bold', fontSize: 34}}
-
+                            onPress = {() => {navigation.navigate("RegisterForm", {role: "DrawerNavigator_Customer"})}}
                         />
                     </View>
 
@@ -35,7 +36,7 @@ const Register = ({navigation}) => {
                             title = "Mechanic"
                             buttonStyle = {styles.button}
                             titleStyle = {{color: "#1B82A3", fontWeight: 'bold', fontSize: 34}}
-
+                            onPress = {() => {navigation.navigate("RegisterForm", {role:"DrawerNavigator_Mechanic"})}}
                         />
                     </View>
 

@@ -1,5 +1,5 @@
-import React, {useContext} from 'react'
-import { StyleSheet, Text, View, Linking, Pressable, Alert, Switch } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View,} from 'react-native'
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
 import {Avatar,Icon} from 'react-native-elements'
 import {colors} from '../GlobalStyle/styles'
