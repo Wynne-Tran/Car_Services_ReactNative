@@ -4,48 +4,53 @@ import {colors, parameters} from "../../GlobalStyle/styles"
 import { Icon, Button} from 'react-native-elements';
 import * as Animatable from 'react-native-animatable'
 import {Formik} from 'formik'
+import {auth} from '../../../firebase'
+import { State } from 'react-native-gesture-handler';
 
-const initialValues = {fullname: '', username: "", email: "", password: "", confirmPass: ""}
 
 export default function RegisterForm ({navigation, route}) {
+
+    const initialValues = {fullname: '', username: "", email: "", password: "", confirmPass: ""}
+
+    const [fullname,setFullname] = useState("")
+    const [username,setUsername] = useState("")
+    const [email,setEmail] = useState("")
+    const [password,setPassword] = useState("")
+    //const [confirmPassword,setConfirmPassword] = useState("")
+
 
     const[textInput2Fossued, setTextInput2Fossued] = useState(false)
     const [passwordFocussed, setPassorFocussed] = useState(false)
     const [passwordBlurded, setPasswordBlurded] = useState(false)
-  
 
-
+    const handleSignUp = () => {
+        try{
+            auth
+            .createUserWithEmailAndPassword(email,password)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+                console.log("Created user with : ",user.email)
+                navigation.navigate('SignIn');
+            })
+            .catch(error => alert(error.message));
+        }catch(err){
+            alert(err)
+        }
+        
+    }
 
     return (
         <ImageBackground source={require('../../../assets/images/Landing.png')}  style={styles.background}>
             <ScrollView style={styles.container}>
                 <StatusBar style="auto" />
-                <Formik initialValues = {initialValues} onSubmit = {() => {}}>
+                <Formik >
                 {
                     (props) => (
                     <View style = {styles.greeting}>
                         <Text style = {{fontSize:36, color: colors.text_white, fontWeight:'bold', marginLeft: "25%", }}>Register</Text>
                         <View style = {{marginTop: 10}}>
                         
-                        <View>
-                            <TextInput 
-                                style = {styles.TextInput1}
-                                placeholder='Phone'
-                                placeholderTextColor = {colors.text_white}
-                                autoFocus = {true}
-                                
-                            />
-                        </View>
-
-                        <View>
-                            <TextInput 
-                                style = {styles.TextInput1}
-                                placeholder='User Name'
-                                placeholderTextColor = {colors.text_white}
-                                autoFocus = {true}
                 
-                            />
-                        </View>
                         
                         <View>
                             <TextInput 
@@ -53,7 +58,8 @@ export default function RegisterForm ({navigation, route}) {
                                 placeholder='Email'
                                 placeholderTextColor = {colors.text_white}
                                 autoFocus = {true}
-              
+                                onChangeText={text=>setEmail(text)}
+                                value={email}
                             />
                         </View>
 
@@ -67,6 +73,7 @@ export default function RegisterForm ({navigation, route}) {
                                     color = {colors.grey3}
                                     type = "material"
                                     style = {{marginRight: 10}}
+
                                     />
                                 </Animatable.View>
 
@@ -78,14 +85,15 @@ export default function RegisterForm ({navigation, route}) {
                                         autoFocus = {false}
                                         onFocus={() => {setPassorFocussed(true)}}
                                         onBlur={() => {setPasswordBlurded(true)}}
-                                        
+                                        value={password}
+                                        onChangeText={text=>setPassword(text)}
                                     />
 
                                 <Animatable.View animation={passwordBlurded? "fadeInLeft" : "fadeInRight"} duration={400}>
                                     <Icon 
                                     name = 'visibility-off'
                                     color = {colors.grey3}
-                                    type = 'meterial'
+                                    type = 'material'
                                     style = {{marginRight :10}}
                                     />
                                 </Animatable.View>
@@ -133,7 +141,10 @@ export default function RegisterForm ({navigation, route}) {
                                 title = "Register"
                                 buttonStyle = {styles.buttonSignIn}
                                 titleStyle = {parameters.buttonTitle}
-                                onPress={()=> navigation.navigate(route.params.role)}
+                                onPress={()=> {
+                                    handleSignUp();
+                                    
+                                }}
                             />
                         </View>
 

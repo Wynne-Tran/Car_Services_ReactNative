@@ -11,13 +11,13 @@ import 'firebase/compat/storage';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBKxaSP2OruP9qZOKRB4j4_MTbon-BKCuc",
-  authDomain: "reactnative-79949.firebaseapp.com",
-  projectId: "reactnative-79949",
-  storageBucket: "reactnative-79949.appspot.com",
-  messagingSenderId: "442933355508",
-  appId: "1:442933355508:web:f326c7710c68c0ecaecfa1",
-  measurementId: "G-GDNKCWR7BJ"
+  apiKey: "AIzaSyAbMJKgzvuEWKU6gDJuEJfLEA6msu7CyZk",
+  authDomain: "motorhub-cd08f.firebaseapp.com",
+  projectId: "motorhub-cd08f",
+  storageBucket: "motorhub-cd08f.appspot.com",
+  messagingSenderId: "130159185649",
+  appId: "1:130159185649:web:0eef40f2b7b43b9bfaa350",
+  measurementId: "G-91P0ECF9GH"
 };
 
 // Initialize Firebase

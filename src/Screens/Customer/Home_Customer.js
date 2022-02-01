@@ -4,9 +4,20 @@ import HomeHeader from '../../Components/HomeHeader'
 import {colors} from '../../GlobalStyle/styles'
 import {Avatar, Icon} from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler'
+import { assignWith } from 'lodash'
+import { auth } from '../../../firebase'
 
 const Home_Customer = ({navigation}) => {
 
+    const handleSignOut = () => {
+        try {
+            auth.signOut()
+            console.log('Logged out of user')
+            navigation.navigate("SignIn")
+        } catch(e){
+            console.log(e)
+        }
+    }
     
 
     return (
@@ -42,7 +53,7 @@ const Home_Customer = ({navigation}) => {
                             </View>
                             <View>
                                 <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_white, fontSize:30}}>username</Text>
-                                <Text style = {{color: colors.text_white, fontSize:14}}>email</Text>
+                                <Text style = {{color: colors.text_white, fontSize:14}}>{auth.currentUser?.email}</Text>
                             </View>
                             
                         </View>
@@ -71,6 +82,9 @@ const Home_Customer = ({navigation}) => {
                                 <Text style={{color: colors.text_white, fontWeight: 'bold', marginLeft: '20%', fontSize: 18}}>Welcome username !</Text>
                             </ImageBackground>
                         </View>
+                        <TouchableOpacity style={styles.editButton} onPress={handleSignOut}>
+                            <Text>Sign Out</Text>
+                        </TouchableOpacity>
                         
                     </ScrollView>
                 </View>

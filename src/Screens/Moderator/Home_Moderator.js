@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity, I
 import HomeHeader from '../../Components/HomeHeader'
 import {colors} from '../../GlobalStyle/styles'
 import {Avatar, Icon, withBadge} from 'react-native-elements'
-import {auth} from '../../../firsebase'
+import {auth} from '../../../firebase'
 import { collection, getDocs} from  '@firebase/firestore'
 
 
@@ -32,7 +32,7 @@ const Home_Moderator = ({navigation}) => {
                     
                     <View style = {{marginLeft:20}}>
                         <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_orange, fontSize:24}}>Userame</Text>
-                        <Text style = {{color: colors.text_orange, fontSize:14}}>Email</Text>
+                        <Text style = {{color: colors.text_orange, fontSize:14}}>{auth.currentUser?.email}</Text>
                     </View>
                 </View>
 
