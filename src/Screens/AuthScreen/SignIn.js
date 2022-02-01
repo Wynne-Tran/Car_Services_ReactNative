@@ -1,29 +1,52 @@
-import React, {useState} from 'react'
+import React, {useState,useEffect} from 'react'
 import { StyleSheet, Text, View, ImageBackground, StatusBar, TextInput, ScrollView, Alert} from 'react-native';
-import {colors, parameters} from "../../GlobalStyle/styles"
+import {colors, parameters} from "../../GlobalStyle/styles";
+import { role } from '../../Screens/AuthScreen/Register'
 import { Icon, Button} from 'react-native-elements';
 import * as Animatable from 'react-native-animatable'
 
 import {Formik} from 'formik'
+import { auth } from '../../../firebase';
 
 
 
 export default function SignIn ({navigation}) {
+    
+    const [email,setEmail] = useState("")
+    const [password,setPassword] = useState("")
 
+    useEffect(()=> {
+       const unsubscribe = auth.onAuthStateChanged(user => {
+            if(user){
+                
+            }
+            
+
+        })
+        return unsubscribe;
+    },[])
    
     const[textInput2Fossued, setTextInput2Fossued] = useState(false)
+
+    const handleLogin = () => {
+        try{
+            auth
+        .signInWithEmailAndPassword(email,password)
+        .then(userCredentials => {
+            const user = userCredentials.user;
+            console.log('Logged in with : ', user.email)
+        })
+        .catch(error => alert(error.message));
+        }   catch(err){
+            alert(err)
+        }
+    }
 
     return (
         <ImageBackground source={require('../../../assets/images/Landing.png')}  style={styles.background}>
             <ScrollView style={styles.container}>
                 <StatusBar style="auto" />
-                <Formik 
-                initialValues = {{email:'',password:''}}
-                onSubmit = {(values)=>{
-                           signIn(values)
-   
-                        }}
-                    >
+                <Formik >
                     { (props)=>(
                 <View style = {styles.greeting}>
                     <Text style = {{fontSize:36, color: colors.text_white, fontWeight:'bold', marginLeft: "30%", }}>Log In</Text>
@@ -33,7 +56,8 @@ export default function SignIn ({navigation}) {
                             style = {styles.TextInput1}
                             placeholder='Email'
                             placeholderTextColor = {colors.text_white}
-                            
+                            value={email}
+                            onChangeText={text => setEmail(text)}
                         />
                     </View>
                     <View style = {styles.TextInput2}>
@@ -49,7 +73,8 @@ export default function SignIn ({navigation}) {
                                 style = {{width: "80%", color: colors.text_white}}
                                 placeholder='Password'
                                 placeholderTextColor = {colors.text_white}
-                                
+                                value={password}
+                                onChangeText={text => setPassword(text)}
                                 onFocus={() => {
                                     setTextInput2Fossued(false)
                                 }}
@@ -80,7 +105,7 @@ export default function SignIn ({navigation}) {
                             title = "LogIn"
                             buttonStyle = {styles.buttonSignIn}
                             titleStyle = {parameters.buttonTitle}
-                            onPress={() => navigation.navigate("DrawerNavigator_Moderator")}
+                            onPress={() => handleLogin()}
                             
                         />
                     </View>
