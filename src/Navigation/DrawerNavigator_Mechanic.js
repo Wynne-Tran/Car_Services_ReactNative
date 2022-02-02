@@ -6,6 +6,7 @@ import {Icon} from 'react-native-elements'
 // Mechanic
 import DrawerContent_Mechanic from '../Components/DrawerContent_Mechanic'
 import Home_Mechanic from '../Screens/Mechanic/Home_Mechanic'
+import Edit_Profile from '../Screens/Mechanic/Edit_Profile'
 
 
 const Drawer = createDrawerNavigator()
@@ -20,6 +21,23 @@ const DrawerNavigator_Mechanic = () => {
             <Drawer.Screen 
                 name = "Home_Mechanic"
                 component = {Home_Mechanic}
+                options={{
+                    headerShown: false,
+                    title: 'Profile',
+                    drawerIcon: ({focussed, size}) =>  (
+                        <Icon 
+                            type = "material"
+                            name = "business"
+                            color = {focussed ? '#7cc' : colors.grey2}
+                            size = {size}
+                        />
+                    )
+                }}
+            />
+
+            <Drawer.Screen 
+                name = "Edit_Profile"
+                component = {Edit_Profile}
                 options={{
                     headerShown: false,
                     title: 'Profile',

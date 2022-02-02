@@ -1,52 +1,79 @@
-import React, {useState,useEffect} from 'react'
-import { StyleSheet, Text, View, ImageBackground, StatusBar, TextInput, ScrollView, Alert} from 'react-native';
-import {colors, parameters} from "../../GlobalStyle/styles";
-import { role } from '../../Screens/AuthScreen/Register'
+import React, {useState, useRef, useEffect} from 'react'
+import { StyleSheet, Text, View, ImageBackground, StatusBar, TextInput, ScrollView, Alert, TouchableOpacity} from 'react-native';
+import {colors, parameters} from "../../GlobalStyle/styles"
 import { Icon, Button} from 'react-native-elements';
 import * as Animatable from 'react-native-animatable'
-
 import {Formik} from 'formik'
-import { auth } from '../../../firebase';
-
-
+// here connect Firebase
+import {auth, db} from '../../../firebase'
+import { collection, getDocs} from  '@firebase/firestore'
 
 export default function SignIn ({navigation}) {
-    
-    const [email,setEmail] = useState("")
-    const [password,setPassword] = useState("")
 
-    useEffect(()=> {
-       const unsubscribe = auth.onAuthStateChanged(user => {
-            if(user){
-                
-            }
-            
-
-        })
-        return unsubscribe;
-    },[])
-   
     const[textInput2Fossued, setTextInput2Fossued] = useState(false)
+    const textInput1 = useRef(1)
+    const textInput2 = useRef(2)
+    const [passwordVisibility, setPasswordVisibility] = useState(true);
+    const [rightIcon, setRightIcon] = useState('visibility-off');
 
-    const handleLogin = () => {
-        try{
-            auth
-        .signInWithEmailAndPassword(email,password)
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+
+    useEffect(() => {
+        const getUsers = async() => {
+            const data = await getDocs(userCollectionRef)
+            setUsers(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
+          }
+        getUsers()
+        
+    }, [])
+    
+    function signIn(data){
+        const {email, password} = data
+        auth
+        .signInWithEmailAndPassword(email.toLowerCase(), password)
         .then(userCredentials => {
             const user = userCredentials.user;
-            console.log('Logged in with : ', user.email)
-        })
-        .catch(error => alert(error.message));
-        }   catch(err){
-            alert(err)
-        }
-    }
+            if(user){
+                const getUserRole = users.filter(data => data.email === email.toLowerCase())
+                if(getUserRole[0].role === "Moderator"){navigation.navigate("DrawerNavigator_Moderator")}
+                else if(getUserRole[0].role === "Mechanic"){navigation.navigate("DrawerNavigator_Mechanic")}
+                else{navigation.navigate("DrawerNavigator_Customer")}
+            }
+            else{
+                Alert.alert("Email or password incorrect !")
+            }
+        }).catch(e =>
+            e ? Alert.alert("Email or password incorrect !") : null
+        )}
+
+        const handlePasswordVisibility = () => {
+            if (rightIcon === 'visibility-off') {
+              setRightIcon('visibility');
+              setPasswordVisibility(!passwordVisibility);
+            } else if (rightIcon === 'visibility') {
+              setRightIcon('visibility-off');
+              setPasswordVisibility(!passwordVisibility);
+            }
+          
+            return {
+                passwordVisibility,
+                rightIcon,
+                handlePasswordVisibility
+            };
+        };
+    
 
     return (
         <ImageBackground source={require('../../../assets/images/Landing.png')}  style={styles.background}>
             <ScrollView style={styles.container}>
                 <StatusBar style="auto" />
-                <Formik >
+                <Formik 
+                initialValues = {{email:'',password:''}}
+                onSubmit = {(values)=>{
+                           signIn(values)
+                        }}
+                    >
                     { (props)=>(
                 <View style = {styles.greeting}>
                     <Text style = {{fontSize:36, color: colors.text_white, fontWeight:'bold', marginLeft: "30%", }}>Log In</Text>
@@ -56,8 +83,9 @@ export default function SignIn ({navigation}) {
                             style = {styles.TextInput1}
                             placeholder='Email'
                             placeholderTextColor = {colors.text_white}
-                            value={email}
-                            onChangeText={text => setEmail(text)}
+                            ref = {textInput1}
+                            onChangeText = {props.handleChange('email')}
+                            value ={props.values.email}
                         />
                     </View>
                     <View style = {styles.TextInput2}>
@@ -73,22 +101,24 @@ export default function SignIn ({navigation}) {
                                 style = {{width: "80%", color: colors.text_white}}
                                 placeholder='Password'
                                 placeholderTextColor = {colors.text_white}
-                                value={password}
-                                onChangeText={text => setPassword(text)}
+                                ref = {textInput2}
                                 onFocus={() => {
                                     setTextInput2Fossued(false)
                                 }}
                                 onBlur={() => {
                                     setTextInput2Fossued(true)
                                 }}
-                                
+                                secureTextEntry={passwordVisibility}
+                                onChangeText = {props.handleChange('password')}
+                                value = {props.values.password}
                             />
                         <Animatable.View animation={textInput2Fossued ? "" : "fadeInLeft"} duration={400} >
                             <Icon 
-                                name="visibility-off"
+                                name= {rightIcon}
                                 iconStyle = {{color:colors.grey3}}
                                 type = "material"
                                 style = {{marginRight: 10}}
+                                onPress={handlePasswordVisibility}
                             />
                         </Animatable.View>
                     </View>
@@ -98,21 +128,28 @@ export default function SignIn ({navigation}) {
                         <Button 
                             title = "Cancel"
                             buttonStyle = {styles.buttonCancel}
-                            titleStyle = {parameters.buttonTitle}
-                            onPress = {() => {navigation.goBack()}}
+                            titleStyle = {styles.buttonTitle}
+                            background={require('../../../assets/images/Login_B.png')}
+                            onPress = {() => {navigation.navigate("Landing")}}
                         />
                         <Button 
                             title = "LogIn"
                             buttonStyle = {styles.buttonSignIn}
                             titleStyle = {parameters.buttonTitle}
-                            onPress={() => handleLogin()}
+                            onPress={props.handleSubmit}
                             
                         />
                     </View>
 
-                    <View style = {{alignItems: "center", marginTop: 20}}>
-                        <Text style = {{...styles.text1, textDecorationLine: "underline"}}>Forgot Password ?</Text>
-                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate("ForgotPassword")
+                        }}
+                    >
+                        <View style = {{alignItems: "center", marginTop: 20}}>
+                            <Text style = {{...styles.text1, textDecorationLine: "underline"}}>Forgot Password ?</Text>
+                        </View>
+                    </TouchableOpacity>
 
                     <View style = {{marginTop: 20, marginBottom: 20}}>
                         <Text style = {{fontSize: 18, marginLeft: 20}}>LogIn with</Text>
@@ -222,7 +259,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.button_green,
         height: 50,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        width: 120
       },
       buttonSignIn: {
         backgroundColor: colors.button_violet,
@@ -230,7 +268,17 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.button_violet,
         height: 50,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        width: 120
+      },
+      buttonTitle: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: -3,
+        
       }
     
  

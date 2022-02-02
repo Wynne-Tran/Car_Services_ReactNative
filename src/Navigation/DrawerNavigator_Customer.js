@@ -6,7 +6,14 @@ import {Icon} from 'react-native-elements'
 // Customer
 import DrawerContent_Customer from '../Components/DrawerContent_Customer'
 import Home_Customer from '../Screens/Customer/Home_Customer'
-
+import Edit_Profile from '../Screens/Customer/Edit_Profile'
+import Change_Password from '../Screens/Customer/Change_Password'
+import Services from '../Screens/Customer/Services'
+import Booking from '../Screens/Customer/Booking'
+import Checkout from '../Screens/Customer/Checkout'
+import Confirm_Message from '../Screens/Customer/Confirm_Message'
+import History_Services from '../Screens/Customer/History_Services'
+import History_Detail from '../Screens/Customer/History_Detail'
 
 
 const Drawer = createDrawerNavigator()
@@ -123,6 +130,40 @@ const DrawerNavigator_Customer = () => {
             <Drawer.Screen 
                 name = "Confirm_Message"
                 component = {Confirm_Message}
+                options={{
+                    headerShown: false,
+                    title: 'Profile',
+                    drawerIcon: ({focussed, size}) =>  (
+                        <Icon 
+                            type = "material"
+                            name = "business"
+                            color = {focussed ? '#7cc' : colors.grey2}
+                            size = {size}
+                        />
+                    )
+                }}
+            />
+
+            <Drawer.Screen 
+                name = "History_Services"
+                component = {History_Services}
+                options={{
+                    headerShown: false,
+                    title: 'Profile',
+                    drawerIcon: ({focussed, size}) =>  (
+                        <Icon 
+                            type = "material"
+                            name = "business"
+                            color = {focussed ? '#7cc' : colors.grey2}
+                            size = {size}
+                        />
+                    )
+                }}
+            />
+
+            <Drawer.Screen 
+                name = "History_Detail"
+                component = {History_Detail}
                 options={{
                     headerShown: false,
                     title: 'Profile',

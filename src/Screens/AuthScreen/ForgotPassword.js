@@ -3,13 +3,80 @@ import { StyleSheet, Text, View, ImageBackground, StatusBar, TextInput, ScrollVi
 import {colors, parameters} from "../../GlobalStyle/styles"
 import { Icon, Button} from 'react-native-elements';
 import * as Animatable from 'react-native-animatable'
+import {auth, db} from '../../../firebase'
 import {Formik} from 'formik'
+import { collection, getDocs, updateDoc, doc} from  '@firebase/firestore'
 
 
 
 export default function ForgotPassword ({navigation}) {
 
+    const[textInput2Fossued, setTextInput2Fossued] = useState(false)
+    const [passwordFocussed, setPassorFocussed] = useState(false)
+    const [passwordBlurded, setPasswordBlurded] = useState(false)
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+    const [passwordVisibility, setPasswordVisibility] = useState(true);
+    const [rightIcon, setRightIcon] = useState('visibility-off');
+
+
+    useEffect(() => {
+        const getUsers = async() => {
+            const data = await getDocs(userCollectionRef)
+            setUsers(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
+          }
+        getUsers()
+        
+    }, [])
+
+    const handlePasswordVisibility = () => {
+        if (rightIcon === 'visibility-off') {
+          setRightIcon('visibility');
+          setPasswordVisibility(!passwordVisibility);
+        } else if (rightIcon === 'visibility') {
+          setRightIcon('visibility-off');
+          setPasswordVisibility(!passwordVisibility);
+        }
+      
     
+        return {
+            passwordVisibility,
+            rightIcon,
+            handlePasswordVisibility
+        };
+    };
+
+    const updatePass = async(id, newPass) => {
+        const updatePass = doc(db, "users", id)
+        const userDoc = users.filter(user => user.id === id)
+        const newFields = {
+            fullname: "", 
+            username: userDoc[0].username, 
+            email: userDoc[0].email, 
+            password: userDoc[0].password, 
+            role: userDoc[0].role,
+            phone: userDoc[0].phone,
+            address: userDoc[0].address,
+            jobTitle: "",
+            vehicle: "",
+            image: userDoc[0].image,
+            experience: "",
+            salary: 0.0,
+            password: newPass, 
+            activeMechanic: ""
+        }
+
+        auth
+        .signInWithEmailAndPassword(userDoc[0].email, userDoc[0].password)
+        .then((userCredential) => userCredential.user.updatePassword(newPass))
+        .catch( e => console.log(e))
+
+        
+        await updateDoc(updatePass, newFields)
+        
+        
+        
+    }
 
     return (
         <ImageBackground source={require('../../../assets/images/Landing.png')}  style={styles.background}>
@@ -146,7 +213,7 @@ export default function ForgotPassword ({navigation}) {
                             title = "Save"
                             buttonStyle = {styles.buttonSignIn}
                             titleStyle = {parameters.buttonTitle}
-                            onPress={() => {navigation.navigate("SignIn")}}
+                            onPress={props.handleSubmit}
                             
                         />
                     </View>

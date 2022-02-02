@@ -1,12 +1,9 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { StyleSheet, StatusBar, View, ImageBackground} from 'react-native';
 import { Icon, Button} from 'react-native-elements';
 
 
 const Register = ({navigation}) => {
-    const [role, setRole] = useState()
-   
-    
     return (
 
        <View style={styles.container}>
@@ -19,9 +16,7 @@ const Register = ({navigation}) => {
                             title = "Moderator"
                             buttonStyle = {styles.button}
                             titleStyle = {{color: "#1B82A3", fontWeight: 'bold', fontSize: 34}}
-                            onPress = {() => {
-                                navigation.navigate("RegisterForm", {role: "DrawerNavigator_Moderator"}
-                                )}}
+                            onPress = {() => {navigation.navigate("RegisterForm", {title: "Moderator"})}}
                         />
                     </View>
                     
@@ -30,9 +25,7 @@ const Register = ({navigation}) => {
                             title = "Customer"
                             buttonStyle = {styles.button}
                             titleStyle = {{color: "#1B82A3", fontWeight: 'bold', fontSize: 34}}
-                            onPress = {() => {
-                                navigation.navigate("RegisterForm", {role: "DrawerNavigator_Customer"})
-                        }}
+                            onPress = {() => {navigation.navigate("RegisterForm", {title: "Customer"})}}
                         />
                     </View>
 
@@ -42,9 +35,7 @@ const Register = ({navigation}) => {
                             title = "Mechanic"
                             buttonStyle = {styles.button}
                             titleStyle = {{color: "#1B82A3", fontWeight: 'bold', fontSize: 34}}
-                            onPress = {() => {
-                                navigation.navigate("RegisterForm", {role:"DrawerNavigator_Mechanic"})
-                            }}
+                            onPress = {() => {navigation.navigate("RegisterForm", {title: "Mechanic"})}}
                         />
                     </View>
 

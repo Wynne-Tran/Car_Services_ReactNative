@@ -1,15 +1,35 @@
-
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity, Image, ScrollView  } from 'react-native'
 import HomeHeader from '../../Components/HomeHeader'
 import {colors} from '../../GlobalStyle/styles'
 import {Avatar, Icon, withBadge} from 'react-native-elements'
-import {auth} from '../../../firebase'
+import {auth, db} from '../../../firebase'
 import { collection, getDocs} from  '@firebase/firestore'
 
-
 const Home_Moderator = ({navigation}) => {
-    const BadgeIcon = withBadge(0)(Icon)
+
+    
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+    const [count, setCount] = useState(0)
+    const BadgeIcon = withBadge(count)(Icon)
+    const [activeMec, setActiveMec] = useState([])
+ 
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            const getUsers = async() => {
+                const data = await getDocs(userCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                data2.forEach(activeMec => activeMec.activeMechanic == "No" ? setCount(count + 1) : null)
+                setUsers(data2.find(user => user.email === auth.currentUser.email))
+                setActiveMec(data2.filter(user => user.activeMechanic === "No"))
+              }
+            getUsers()
+        })
+        return unsubscribe;
+    }, [navigation])
+
     return (
         <ImageBackground source={require('../../../assets/images/plainBg.png')}  style={styles.background}>
             <View style = {styles.container}>
@@ -19,20 +39,20 @@ const Home_Moderator = ({navigation}) => {
                     backgroundColor="rgba(255, 140, 82, 1)"
                 />
 
-            <HomeHeader navigation={navigation} role = "Moderator"/>
-
-            <View style = {{flexDirection: 'row', alignItems: 'center', paddingLeft: 40, }}>
+                <HomeHeader navigation={navigation} role = "Home"/>
+    
+                <View style = {{flexDirection: 'row', alignItems: 'center', paddingLeft: 40, }}>
                     
                     <Avatar 
                         rounded
                         avatarStyle = {styles.avatar}
                         size = {85}
-                        //source = {{uri: users.image}}
+                        source = {{uri: users.image}}
                     />
                     
                     <View style = {{marginLeft:20}}>
-                        <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_orange, fontSize:24}}>Userame</Text>
-                        <Text style = {{color: colors.text_orange, fontSize:14}}>{auth.currentUser?.email}</Text>
+                        <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_orange, fontSize:24}}>{users.username}</Text>
+                        <Text style = {{color: colors.text_orange, fontSize:14}}>{auth.currentUser.email}</Text>
                     </View>
                 </View>
 
@@ -120,25 +140,27 @@ const Home_Moderator = ({navigation}) => {
                 </View>
                 <View style={styles.message}>
                     <ScrollView>
-                    <TouchableOpacity
-                                
+                        {activeMec.map(active => (
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate("Active_Mec_Account", {data: activeMec, id: active.id})}
                             >
-                            <View style={styles.announment} >
+                            <View style={styles.announment} key={active.id}>
                                 <Avatar 
                                     rounded
                                     avatarStyle = {styles.avatar}
                                     size = {55}
-                                    
+                                    source = {{uri: active.image}}
                                 />
                                 <View style={{ marginHorizontal: 10}}>
-                                    <Text style={{color: colors.text_white, fontSize: 20, fontWeight: 'bold'}}>Username<Text style={{fontSize: 30}}>👋</Text> </Text>
+                                    <Text style={{color: colors.text_white, fontSize: 20, fontWeight: 'bold'}}>{active.username} <Text style={{fontSize: 30}}>👋</Text> </Text>
                                     <Text style={{color: colors.text_white,}}>Plese active account for me ! </Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
+                        ))}
                     </ScrollView>
                 </View>
-        </View>
+            </View>
         </ImageBackground>
     )
 }

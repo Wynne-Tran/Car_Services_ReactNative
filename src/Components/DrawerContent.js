@@ -1,134 +1,158 @@
-import React from 'react'
-import { StyleSheet, Text, View,} from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, View, Linking, Pressable, Alert, Switch, ImageBackground} from 'react-native'
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
-import {Avatar,Icon} from 'react-native-elements'
+import {Avatar,Icon, Button} from 'react-native-elements'
 import {colors} from '../GlobalStyle/styles'
-
+import {auth} from '../../firebase'
+import {db} from '../../firebase'
+import { collection, getDocs} from  '@firebase/firestore'
 
 
 const DrawerContent = (props) => {
 
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            const getUsers = async() => {
+                const data = await getDocs(userCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setUsers( data2.find(user => user.email === auth.currentUser.email))
+              }
+            getUsers()
+        })
+        return unsubscribe;
+        
+    }, [props])
+
+    const handleSignOut = () => {
+        auth
+        .signOut()
+        .then(props.navigation.navigate('SignIn'))
+        .catch(error => Alert.alert(error.message))
+    }
 
     return (
-        <View style = {styles.container}>
-            <DrawerContentScrollView {...props} >
-                <View style = {{backgroundColor: colors.buttons}}>
-                    <View style = {{flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingVertical: 10}}>
-                        <Avatar 
-                            rounded
-                            avatarStyle = {styles.avatar}
-                            size = {75}
-                            source = {require('../../assets/images/None.jpeg')}
-                        />
-                        <View style = {{marginLeft:10}}>
-                            <Text style={{fontWeight:'bold', color:colors.cardbackground, fontSize:18}}>John Mark</Text>
-                            <Text style = {{color: colors.cardbackground, fontSize:14}}>email</Text>
-                        </View>
-                    </View>
-
-                    <View style = {{flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 5}}>
-                        <View style = {{flexDirection:'row', marginTop: 10}}>
-                            <View style={{marginLeft: 10, alignItems: 'center', justifyContent:'center'}}>
-                                <Text style = {{fontWeight: 'bold', color: colors.cardbackground, fontSize: 18}}>1</Text>
-                                <Text style = {{color: colors.cardbackground, fontSize: 14}}>My Favorites</Text>
+        <ImageBackground source={require('../../assets/images/Background.png')}  style={styles.background}>
+            <View style = {styles.container}>
+                <DrawerContentScrollView {...props} >
+                    <View style = {{backgroundColor: colors.buttons}}>
+                        <View style = {{flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingVertical: 10}}>
+                            <Avatar 
+                                rounded
+                                avatarStyle = {styles.avatar}
+                                size = {85}
+                                source = {{uri: users.image}}
+                            />
+                            <View style = {{marginLeft:10}}>
+                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.cardbackground, fontSize:24}}>{users.username}</Text>
+                                <Text style = {{color: colors.cardbackground, fontSize:14}}>{auth.currentUser.email}</Text>
                             </View>
                         </View>
 
-                        <View style = {{flexDirection:'row', marginTop: 10}}>
-                            <View style={{marginLeft: 10, alignItems: 'center', justifyContent:'center'}}>
-                                <Text style = {{fontWeight: 'bold', color: colors.cardbackground, fontSize: 18}}>0</Text>
-                                <Text style = {{color: colors.cardbackground, fontSize: 14}}>My Cart</Text>
-                            </View>
+                        <View >
+                            <Button 
+                                title = "Edit Profile"
+                                buttonStyle = {styles.buttonSignIn}
+                                titleStyle = {styles.buttonTitle}
+                                onPress = {() => props.navigation.navigate("Edit_Profile")}
+                            />
                         </View>
+                
                     </View>
-               
-                </View>
 
-                
-
-                <DrawerItem 
-                    label = "Home"
-                    icon = {({color, size}) => (
-                        <Icon 
-                            type = "material-community"
-                            name = "home"
-                            color = {color}
-                            size = {size}
-
-                        />
-                    )}
-                />
-
-                <DrawerItem 
-                    label = "Approved Submission"
-                    icon = {({color, size}) => (
-                        <Icon 
-                            type = "material-community"
-                            name = "tag-heart"
-                            color = {color}
-                            size = {size}
-
-                        />
-                    )}
-                />
-
-                <DrawerItem 
-                    label = "Earns"
-                    icon = {({color, size}) => (
-                        <Icon 
-                            type = "material-community"
-                            name = "piggy-bank"
-                            color = {color}
-                            size = {size}
-
-                        />
-                    )}
-                />
-
-
-                <DrawerItem 
-                    label = "History Tasks"
-                    icon = {({color, size}) => (
-                        <Icon 
-                            type = "material-community"
-                            name = "server"
-                            color = {color}
-                            size = {size}
-
-                        />
-                    )}
-                />
-
-                <DrawerItem 
-                    label = "Change Password"
-                    icon = {({color, size}) => (
-                        <Icon 
-                            type = "material-community"
-                            name = "shield-account"
-                            color = {color}
-                            size = {size}
-
-                        />
-                    )}
-                />
-                
-            </DrawerContentScrollView>
-
-            <DrawerItem 
-                    style = {{marginBottom: 30}}
-                    label = "Sign Out"
-                    icon = {({color, size}) => (
-                        <Icon 
-                            type = "material-community"
-                            name = "logout-variant"
-                            color = {color}
-                            size = {size}
-
-                        />
-                    )}
                     
-                />
-        </View>
+
+                    <DrawerItem 
+                        label = "Home"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "home"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress={() => props.navigation.navigate("Home_Moderator")}
+                    />
+
+                    <DrawerItem 
+                        label = "Approved Submission"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "tag-heart"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress = {() => props.navigation.navigate("View_Submission")}
+                    />
+
+                    <DrawerItem 
+                        label = "Earns"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "piggy-bank"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress={() => props.navigation.navigate("Earns")}
+                    />
+
+
+                    <DrawerItem 
+                        label = "History Tasks"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "server"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress={() => props.navigation.navigate("History_Task")}
+                    />
+
+                    <DrawerItem 
+                        label = "Change Password"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "shield-account"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress = {() => props.navigation.navigate("Change_Password")}
+                    />
+                    
+                </DrawerContentScrollView>
+
+                <DrawerItem 
+                        style = {{marginBottom: 30}}
+                        label = "Sign Out"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "logout-variant"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress={handleSignOut}
+                    />
+            </View>
+        </ImageBackground>
 
     )
 }
@@ -164,5 +188,33 @@ const styles = StyleSheet.create({
         paddingTop: 10, 
         paddingLeft: 0,
         fontWeight: "bold",
+    },
+    background:{
+        flex: 1, 
+        width: "100%", 
+        justifyContent: 'center', 
+        backgroundColor: 'black', 
+        resizeMode: 'cover',
+     
+    },
+    buttonSignIn: {
+        width: "45%", 
+        alignItems: 'center', 
+        marginLeft: "35%",
+        borderRadius: 15,
+        backgroundColor: colors.Card_DarkGrey,
+        borderColor: colors.Card_DarkGrey,
+        
+      },
+      buttonTitle: {
+        color: "white",
+        fontSize: 14,
+        fontWeight: "bold",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: -3,
+        backgroundColor: colors.Card_DarkGrey,
+        borderColor: colors.Card_DarkGrey,
+        borderWidth: 0
     }
 })

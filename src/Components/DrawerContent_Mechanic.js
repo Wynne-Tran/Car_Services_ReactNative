@@ -3,12 +3,35 @@ import { StyleSheet, Text, View, Linking, Pressable, Alert, Switch, ImageBackgro
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
 import {Avatar,Icon, Button} from 'react-native-elements'
 import {colors} from '../GlobalStyle/styles'
-
+import {auth} from '../../firebase'
+import {db} from '../../firebase'
+import { collection, getDocs} from  '@firebase/firestore'
 
 
 const DrawerContent_Mechanic = (props) => {
 
-    
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            const getUsers = async() => {
+                const data = await getDocs(userCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setUsers( data2.find(user => user.email === auth.currentUser.email))
+              }
+            getUsers()
+        })
+        return unsubscribe;
+        
+    }, [props])
+
+    const handleSignOut = () => {
+        auth
+        .signOut()
+        .then(props.navigation.navigate('SignIn'))
+        .catch(error => Alert.alert(error.message))
+    }
 
     return (
         <ImageBackground source={require('../../assets/images/Background.png')}  style={styles.background}>
@@ -20,11 +43,11 @@ const DrawerContent_Mechanic = (props) => {
                                 rounded
                                 avatarStyle = {styles.avatar}
                                 size = {85}
-                                //source = {{}}
+                                source = {{uri: users.image}}
                             />
                             <View style = {{marginLeft:10}}>
-                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.cardbackground, fontSize:24}}>Username</Text>
-                                <Text style = {{color: colors.cardbackground, fontSize:14}}>Email</Text>
+                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.cardbackground, fontSize:24}}>{users.username}</Text>
+                                <Text style = {{color: colors.cardbackground, fontSize:14}}>{auth.currentUser.email}</Text>
                             </View>
                         </View>
 
@@ -33,7 +56,7 @@ const DrawerContent_Mechanic = (props) => {
                                 title = "Edit Profile"
                                 buttonStyle = {styles.buttonSignIn}
                                 titleStyle = {styles.buttonTitle}
-                            
+                                onPress = {() => props.navigation.navigate("Edit_Profile")}
                             />
                         </View>
                 
@@ -52,8 +75,74 @@ const DrawerContent_Mechanic = (props) => {
 
                             />
                         )}
-                        
+                        onPress={() => props.navigation.navigate("Home_Mechanic")}
                     />
+
+                    {users.activeMechanic == "Yes" ? (
+                        <View>
+                      
+
+                        <DrawerItem 
+                        label = "Find Tasks"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "tag-heart"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress = {() => props.navigation.navigate("Find_Tasks")}
+                    />
+
+                    <DrawerItem 
+                        label = "Message"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "mail"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress={() => props.navigation.navigate("Message")}
+                    />
+
+
+                    <DrawerItem 
+                        label = "Wallet"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "piggy-bank"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress={() => props.navigation.navigate("History_Earns")}
+                    />
+
+                    <DrawerItem 
+                        label = "Change Password"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "shield-account"
+                                color = {color}
+                                size = {size}
+
+                            />
+                        )}
+                        onPress = {() => props.navigation.navigate("Change_Password")}
+                    />
+
+
+                    
+                        </View>
+                    ) : null}
 
                     
                     
@@ -71,7 +160,7 @@ const DrawerContent_Mechanic = (props) => {
 
                             />
                         )}
-                      
+                        onPress={handleSignOut}
                     />
             </View>
         </ImageBackground>

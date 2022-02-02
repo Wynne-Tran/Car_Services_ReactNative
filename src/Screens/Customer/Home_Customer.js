@@ -3,22 +3,30 @@ import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity } 
 import HomeHeader from '../../Components/HomeHeader'
 import {colors} from '../../GlobalStyle/styles'
 import {Avatar, Icon} from 'react-native-elements'
+import {auth, db} from '../../../firebase'
+import { collection, getDocs} from  '@firebase/firestore'
 import { ScrollView } from 'react-native-gesture-handler'
-import { assignWith } from 'lodash'
-import { auth } from '../../../firebase'
 
 const Home_Customer = ({navigation}) => {
 
-    const handleSignOut = () => {
-        try {
-            auth.signOut()
-            console.log('Logged out of user')
-            navigation.navigate("SignIn")
-        } catch(e){
-            console.log(e)
-        }
-    }
-    
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+
+
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            const getUsers = async() => {
+                const data = await getDocs(userCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setUsers( data2.find(user => user.email === auth.currentUser.email))
+              }
+            getUsers()
+
+        })
+        return unsubscribe;
+        
+    }, [navigation])
 
     return (
         <ImageBackground source={require('../../../assets/images/plainBg.png')}  style={styles.background}>
@@ -33,7 +41,7 @@ const Home_Customer = ({navigation}) => {
     
                 <View style={styles.message}>
                     <TouchableOpacity
-                       
+                        onPress={() => navigation.navigate("Edit_Profile")}
                     >
                         <View style={styles.editButton}>
                             <Text style ={{color: colors.text_white, fontWeight: 'bold'}}>Edit</Text>
@@ -47,13 +55,13 @@ const Home_Customer = ({navigation}) => {
                                 rounded
                                 avatarStyle = {styles.avatar}
                                 size = {65}
-                                //source = {{}}
+                                source = {{uri: users.image}}
                             />
                             
                             </View>
                             <View>
-                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_white, fontSize:30}}>username</Text>
-                                <Text style = {{color: colors.text_white, fontSize:14}}>{auth.currentUser?.email}</Text>
+                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_white, fontSize:30}}>{users.username}</Text>
+                                <Text style = {{color: colors.text_white, fontSize:14}}>{auth.currentUser.email}</Text>
                             </View>
                             
                         </View>
@@ -79,12 +87,9 @@ const Home_Customer = ({navigation}) => {
                     <ScrollView style={{padding: 10}}>
                         <View style={styles.message_red}>
                             <ImageBackground source={require('../../../assets/images/note_violet.png')}  style={styles.background2}>
-                                <Text style={{color: colors.text_white, fontWeight: 'bold', marginLeft: '20%', fontSize: 18}}>Welcome username !</Text>
+                                <Text style={{color: colors.text_white, fontWeight: 'bold', marginLeft: '20%', fontSize: 18}}>Welcome {users.username} !</Text>
                             </ImageBackground>
                         </View>
-                        <TouchableOpacity style={styles.editButton} onPress={handleSignOut}>
-                            <Text>Sign Out</Text>
-                        </TouchableOpacity>
                         
                     </ScrollView>
                 </View>

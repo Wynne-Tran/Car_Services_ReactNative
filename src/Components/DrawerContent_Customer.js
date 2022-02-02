@@ -3,11 +3,35 @@ import { StyleSheet, Text, View, Linking, Pressable, Alert, Switch, ImageBackgro
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
 import {Avatar,Icon, Button} from 'react-native-elements'
 import {colors} from '../GlobalStyle/styles'
+import {auth} from '../../firebase'
+import {db} from '../../firebase'
+import { collection, getDocs} from  '@firebase/firestore'
 
 
-const DrawerContent_Customer = () => {
+const DrawerContent_Customer = (props) => {
 
-    
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            const getUsers = async() => {
+                const data = await getDocs(userCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setUsers( data2.find(user => user.email === auth.currentUser.email))
+              }
+            getUsers()
+        })
+        return unsubscribe;
+        
+    }, [props])
+
+    const handleSignOut = () => {
+        auth
+        .signOut()
+        .then(props.navigation.navigate('SignIn'))
+        .catch(error => Alert.alert(error.message))
+    }
 
     return (
         <ImageBackground source={require('../../assets/images/Background.png')}  style={styles.background}>
@@ -19,11 +43,11 @@ const DrawerContent_Customer = () => {
                                 rounded
                                 avatarStyle = {styles.avatar}
                                 size = {85}
-                                source = {{}}
+                                source = {{uri: users.image}}
                             />
                             <View style = {{marginLeft:10}}>
-                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.cardbackground, fontSize:24}}>UserName</Text>
-                                <Text style = {{color: colors.cardbackground, fontSize:14}}>Email</Text>
+                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.cardbackground, fontSize:24}}>{users.username}</Text>
+                                <Text style = {{color: colors.cardbackground, fontSize:14}}>{auth.currentUser.email}</Text>
                             </View>
                         </View>
 
@@ -65,7 +89,7 @@ const DrawerContent_Customer = () => {
 
                             />
                         )}
-                        
+                        onPress = {() => props.navigation.navigate("Services")}
                     />
 
                     <DrawerItem 
@@ -79,7 +103,7 @@ const DrawerContent_Customer = () => {
 
                             />
                         )}
-                      
+                        onPress={() => props.navigation.navigate("Support")}
                     />
 
 
@@ -94,7 +118,7 @@ const DrawerContent_Customer = () => {
 
                             />
                         )}
-                     
+                        onPress={() => props.navigation.navigate("History_Services")}
                     />
 
                     <DrawerItem 
@@ -108,7 +132,7 @@ const DrawerContent_Customer = () => {
 
                             />
                         )}
-                        
+                        onPress = {() => props.navigation.navigate("Change_Password")}
                     />
                     
                 </DrawerContentScrollView>
@@ -125,7 +149,7 @@ const DrawerContent_Customer = () => {
 
                             />
                         )}
-                      
+                        onPress={handleSignOut}
                     />
 
                 

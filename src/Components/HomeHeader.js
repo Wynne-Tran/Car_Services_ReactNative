@@ -35,6 +35,7 @@ const HomeHeader = ({navigation, role}) => {
                     }}
                 />
             </View>
+            
         </View>
     )
 }

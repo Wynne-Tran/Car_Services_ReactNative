@@ -3,12 +3,42 @@ import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity, I
 import HomeHeader from '../../Components/HomeHeader'
 import {colors} from '../../GlobalStyle/styles'
 import {Avatar, Icon} from 'react-native-elements'
-
+import {auth, db} from '../../../firebase'
+import { collection, getDocs} from  '@firebase/firestore'
 import { ScrollView } from 'react-native-gesture-handler'
 
 const Home_Mechanic = ({navigation}) => {
 
-    
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            const getUsers = async() => {
+                const data = await getDocs(userCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setUsers( data2.find(user => user.email === auth.currentUser.email))
+              }
+            getUsers()
+        })
+        return unsubscribe;
+        
+    }, [navigation])
+
+    const findTask = () => {
+        users.activeMechanic == "Yes" ? navigation.navigate("Find_Tasks") : Alert.alert("Edit profile to access app !")
+    }
+    const historyTask = () => {
+        users.activeMechanic == "Yes" ? navigation.navigate("History_Tasks") : Alert.alert("Edit profile to access app !")
+    }
+
+    const historyEarns= () => {
+        users.activeMechanic == "Yes" ? navigation.navigate("History_Earns") : Alert.alert("Edit profile to access app !")
+    }
+    const feedback = () => {
+        users.activeMechanic == "Yes" ? navigation.navigate("Feedback") : Alert.alert("Edit profile to access app !")
+    }
 
     return (
         <ImageBackground source={require('../../../assets/images/plainBg.png')}  style={styles.background}>
@@ -24,7 +54,7 @@ const Home_Mechanic = ({navigation}) => {
                 <View style={styles.message}>
 
                 <TouchableOpacity
-                      
+                        onPress={() => navigation.navigate("Edit_Profile")}
                     >
                 <View style={styles.editButton}>
                 
@@ -38,18 +68,20 @@ const Home_Mechanic = ({navigation}) => {
                             
                             <View>
                             {
-                                <Avatar 
+                                users.Image != 'undefined' && (
+                                    <Avatar 
                                 rounded
                                 avatarStyle = {styles.avatar}
                                 size = {65}
-                                //source = {{}}
+                                source = {{uri: users.image }}
                                 />
+                                )
                             }
                             
                             </View>
                             <View style={{marginTop: 10}}>
-                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_white, fontSize:30}}>username</Text>
-                                <Text style = {{color: colors.text_white, fontSize:14}}>email</Text>
+                                <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_white, fontSize:30}}>{users.username}</Text>
+                                <Text style = {{color: colors.text_white, fontSize:14}}>{auth.currentUser.email}</Text>
                             </View>
                             
                         </View>
@@ -66,14 +98,15 @@ const Home_Mechanic = ({navigation}) => {
 
                 <View style = {{flexDirection:'row', justifyContent: 'space-evenly'}}>
                     <TouchableOpacity style = {{marginVertical: 5, backgroundColor: colors.Card_Orange, height: 100, width: '40%', borderRadius: 15, paddingLeft: 10}}
-                        
+                        onPress={findTask}
                     >
                         <View style={styles.card}>
                             <View style = {{alignItems : "center", justifyContent:'center'}}>
                                 <Image style={{flex: 1,paddingLeft: 30, aspectRatio: 0.7, resizeMode: 'contain'}} source={require('../../../assets/images/Calendar.png')}/>
                             </View>
 
-                            <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
+                            {users.activeMechanic != "Yes" && (
+                                <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
                                     <Icon 
                                         type = "material-community"
                                         name = "lock"
@@ -81,6 +114,7 @@ const Home_Mechanic = ({navigation}) => {
                                         color = {colors.cardbackground}
                                     />
                                 </View>
+                            )}
                         </View>
                         <View>
                             <Text style={{color: colors.text_blue, fontSize: 16, fontWeight: 'bold'}}>Find Task</Text>
@@ -89,14 +123,15 @@ const Home_Mechanic = ({navigation}) => {
 
 
                     <TouchableOpacity style = {{marginVertical: 5, backgroundColor: colors.Card_Black, height: 100, width: '40%', borderRadius: 15, paddingLeft: 10}}
-                        
+                        onPress={historyTask}
                     >
                         <View style={styles.card}>
                             <View style = {{alignItems : "center", justifyContent:'center'}}>
                                 <Image style={{flex: 1,paddingLeft: 30, aspectRatio: 0.7, resizeMode: 'contain'}} source={require('../../../assets/images/Calculate.png')}/>
                             </View>
 
-                            <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
+                            {users.activeMechanic != "Yes" && (
+                                <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
                                     <Icon 
                                         type = "material-community"
                                         name = "lock"
@@ -104,6 +139,7 @@ const Home_Mechanic = ({navigation}) => {
                                         color = {colors.Card_Orange}
                                     />
                                 </View>
+                            )}
                         </View>
                         <View>
                             <Text style={{color: colors.text_orange, fontSize: 16, fontWeight: 'bold'}}>History Task</Text>
@@ -115,14 +151,15 @@ const Home_Mechanic = ({navigation}) => {
                 <View style = {{flexDirection:'row', justifyContent: 'space-evenly'}}>
                     
                     <TouchableOpacity style = {{marginVertical: 5, backgroundColor: colors.Card_DarkGrey, height: 100, width: '40%', borderRadius: 15, paddingLeft: 10}}
-                        
+                        onPress={historyEarns}
                     >
                         <View style={styles.card}>
                             <View style = {{alignItems : "center", justifyContent:'center'}}>
                                 <Image style={{flex: 1,paddingLeft: 30, aspectRatio: 0.7, resizeMode: 'contain'}} source={require('../../../assets/images/Calculate.png')}/>
                             </View>
 
-                            <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
+                            {users.activeMechanic != "Yes" && (
+                                <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
                                     <Icon 
                                         type = "material-community"
                                         name = "lock"
@@ -130,6 +167,7 @@ const Home_Mechanic = ({navigation}) => {
                                         color = {colors.Card_Orange}
                                     />
                                 </View>
+                            )}
                         </View>
                         <View>
                             <Text style={{color: colors.text_orange, fontSize: 16, fontWeight: 'bold'}}>History Earns</Text>
@@ -138,14 +176,15 @@ const Home_Mechanic = ({navigation}) => {
 
 
                     <TouchableOpacity style = {{marginVertical: 5, backgroundColor: colors.Card_LightGrey, height: 100, width: '40%', borderRadius: 15, paddingLeft: 10}}
-                      
+                        onPress={feedback}
                     >
                         <View style={styles.card}>
                             <View style = {{alignItems : "center", justifyContent:'center'}}>
                                 <Image style={{flex: 1,paddingLeft: 30, aspectRatio: 0.7, resizeMode: 'contain'}} source={require('../../../assets/images/Accurate.png')}/>
                             </View>
 
-                            <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
+                            {users.activeMechanic != "Yes" && (
+                                <View style = {{ alignItems: 'center', justifyContent: 'center', marginRight: 15}}>
                                     <Icon 
                                         type = "material-community"
                                         name = "lock"
@@ -153,6 +192,7 @@ const Home_Mechanic = ({navigation}) => {
                                         color = {colors.cardbackground}
                                     />
                                 </View>
+                            )}
                         </View>
                         <View>
                             <Text style={{color: colors.text_blue, fontSize: 20, fontWeight: 'bold'}}>Feedback</Text>
@@ -167,21 +207,27 @@ const Home_Mechanic = ({navigation}) => {
 
                 <View style={styles.announment}>
                     <ScrollView style={{padding: 10}}>
-                    <View style={styles.message_red}>
+                        {users.activeMechanic == "" && (
+                            <View style={styles.message_red}>
                             <ImageBackground source={require('../../../assets/images/message_red.png')}  style={styles.background2}>
                                 <Text style={{color: colors.text_white, fontWeight: 'bold', marginLeft: '20%', fontSize: 18}}>Edit your profile to access the application !</Text>
                             </ImageBackground>
                         </View>
-                        <View style={styles.message_red}>
+                        )}
+                        {users.activeMechanic == "No" && (
+                            <View style={styles.message_red}>
                             <ImageBackground source={require('../../../assets/images/message_red.png')}  style={styles.background2}>
                                 <Text style={{color: colors.text_white, fontWeight: 'bold', marginLeft: '20%', fontSize: 18}}>Mod will review your application !</Text>
                             </ImageBackground>
                         </View>
-                        <View style={styles.message_red}>
+                        )}
+                        {users.activeMechanic == "Yes" && (
+                            <View style={styles.message_red}>
                             <ImageBackground source={require('../../../assets/images/green_note.png')}  style={styles.background2}>
                                 <Text style={{color: colors.text_white, fontWeight: 'bold', marginLeft: '20%', fontSize: 18}}>Congratualtion! You can find you task now !</Text>
                             </ImageBackground>
                         </View>
+                        )}
 
                         
                     </ScrollView>
