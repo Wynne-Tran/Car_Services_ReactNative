@@ -86,6 +86,8 @@ export default function SignIn ({navigation}) {
                             ref = {textInput1}
                             onChangeText = {props.handleChange('email')}
                             value ={props.values.email}
+                            autoCorrect={false}
+                            autoCapitalize='none'
                         />
                     </View>
                     <View style = {styles.TextInput2}>
