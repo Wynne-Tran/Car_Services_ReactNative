@@ -6,6 +6,8 @@ import * as Animatable from 'react-native-animatable'
 import {auth, db} from '../../../firebase'
 import {Formik} from 'formik'
 import { collection, addDoc } from  '@firebase/firestore'
+import {getAuth,createUserWithEmailAndPassword} from 'firebase/auth'
+import {useNavigation} from '@react-navigation/native'
 
 
 const initialValues = {
@@ -26,7 +28,8 @@ const initialValues = {
 }
 
 export default function RegisterForm (Props) {
-
+    const navigation = useNavigation();
+    const auth = getAuth();
     const setRole = Props.route.params.title
     const[textInput2Fossued, setTextInput2Fossued] = useState(false)
     const [passwordFocussed, setPassorFocussed] = useState(false)
@@ -59,13 +62,11 @@ export default function RegisterForm (Props) {
         const {phone, username, email, password} = values
         try {
           await 
-          auth
-            .createUserWithEmailAndPassword(email.toLowerCase(), password)
-            .then(userCredentials => {
+                createUserWithEmailAndPassword(auth,email, password)
+                    .then(userCredentials => {
                 const user = userCredentials.user;
                 createUser(phone, username, email, password)
-                .then(userCredentials => {
-                    const user = userCredentials.user;
+                .then(() => {
                     console.log("Created user with : ",user.email)
                     navigation.navigate('SignIn');
                 })
@@ -142,6 +143,7 @@ export default function RegisterForm (Props) {
                                 style = {styles.TextInput1}
                                 placeholder='User Name'
                                 placeholderTextColor = {colors.text_white}
+                                autoCapitalize='none'
                                 autoFocus = {true}
                                 onChangeText = {props.handleChange('username')}
                                 value = {props.values.username}
@@ -154,6 +156,7 @@ export default function RegisterForm (Props) {
                                 placeholder='Email'
                                 placeholderTextColor = {colors.text_white}
                                 autoFocus = {true}
+                                autoCapitalize='none'
                                 onChangeText = {props.handleChange('email')}
                                 value = {props.values.email}
                             />
