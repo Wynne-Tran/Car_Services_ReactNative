@@ -62,7 +62,7 @@ export default function RegisterForm (Props) {
         const {phone, username, email, password} = values
         try {
           await 
-                createUserWithEmailAndPassword(auth,email, password)
+                createUserWithEmailAndPassword(auth,email.toLowerCase(), password)
                     .then(userCredentials => {
                 const user = userCredentials.user;
                 createUser(phone, username, email, password)
