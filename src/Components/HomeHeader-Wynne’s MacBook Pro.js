@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View} from 'react-native'
-import {colors, parameters } from '../GlobalStyle/styles'
+import {colors} from '../GlobalStyle/styles'
 import {Icon} from 'react-native-elements'
 
 
