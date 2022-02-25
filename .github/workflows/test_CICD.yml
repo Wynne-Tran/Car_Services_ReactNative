@@ -2,7 +2,7 @@ name: Test_CICD
 on:
   push:
     branches:
-      - '*'
+      - Test_CICD
 jobs:
   build:
     runs-on: ubuntu-latest
