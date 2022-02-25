@@ -1,4 +1,4 @@
-name: DandelionMobile
+name: Capstone_Project
 on:
   push:
     branches: [ main ]
