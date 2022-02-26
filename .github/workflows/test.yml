@@ -1,4 +1,4 @@
-name: Test_CICD
+name: Branch
 on:
   push:
     branches:
