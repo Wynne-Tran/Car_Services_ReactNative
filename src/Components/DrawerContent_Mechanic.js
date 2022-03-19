@@ -97,7 +97,7 @@ const DrawerContent_Mechanic = (props) => {
                     />
 
                     <DrawerItem 
-                        label = "Message"
+                        label = "History Tasks"
                         icon = {({color, size}) => (
                             <Icon 
                                 type = "material-community"
@@ -107,7 +107,7 @@ const DrawerContent_Mechanic = (props) => {
 
                             />
                         )}
-                        onPress={() => props.navigation.navigate("Message")}
+                        onPress={() => props.navigation.navigate("History_Tasks")}
                     />
 
 

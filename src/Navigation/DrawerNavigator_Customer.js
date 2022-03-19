@@ -14,6 +14,8 @@ import Checkout from '../Screens/Customer/Checkout'
 import Confirm_Message from '../Screens/Customer/Confirm_Message'
 import History_Services from '../Screens/Customer/History_Services'
 import History_Detail from '../Screens/Customer/History_Detail'
+import Feedback from '../Screens/Customer/Feedback'
+import Confirm_Feedback from '../Screens/Customer/Confirm_Feedback'
 
 
 const Drawer = createDrawerNavigator()
@@ -177,6 +179,40 @@ const DrawerNavigator_Customer = () => {
                     )
                 }}
             />
+
+            <Drawer.Screen 
+                    name = "Feedback"
+                    component = {Feedback}
+                    options={{
+                        headerShown: false,
+                        title: 'Profile',
+                        drawerIcon: ({focussed, size}) =>  (
+                            <Icon 
+                                type = "material"
+                                name = "business"
+                                color = {focussed ? '#7cc' : colors.grey2}
+                                size = {size}
+                            />
+                        )
+                    }}
+                />
+
+                <Drawer.Screen 
+                    name = "Confirm_Feedback"
+                    component = {Confirm_Feedback}
+                    options={{
+                        headerShown: false,
+                        title: 'Profile',
+                        drawerIcon: ({focussed, size}) =>  (
+                            <Icon 
+                                type = "material"
+                                name = "business"
+                                color = {focussed ? '#7cc' : colors.grey2}
+                                size = {size}
+                            />
+                        )
+                    }}
+                />
 
 
             </Drawer.Navigator>

@@ -1,13 +1,11 @@
-import React, {useState, useEffect} from 'react'
-import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity, Image, TextInput  } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View, StatusBar, ImageBackground,} from 'react-native'
 import HomeHeader from '../../Components/HomeHeader'
 import {colors, parameters} from '../../GlobalStyle/styles'
 import {Button} from 'react-native-elements'
-import {auth, db} from '../../../firebase'
-import { collection, getDocs} from  '@firebase/firestore'
 
 
-const Confirm_Message = ({navigation, route}) => {
+const Confirm_Feedback = ({navigation}) => {
 
     return (
         <ImageBackground source={require('../../../assets/images/Background.png')}  style={styles.background}>
@@ -18,16 +16,16 @@ const Confirm_Message = ({navigation, route}) => {
                     backgroundColor="rgba(255, 140, 82, 1)"
                 />
 
-                <HomeHeader navigation={navigation} role = "Confirm Message"/>
+                <HomeHeader navigation={navigation} role = "Confirm Feedback"/>
 
                 
                     <View style={styles.message}>
                     <ImageBackground source={require('../../../assets/images/Thank_Violet.png')} style={{width:'100%', height: "100%", resizeMode: 'cover'}}>
                         <View style = {{alignItems: 'center', justifyContent: 'center', padding: 30}}>
-                            <Text style={{color: colors.text_white, fontSize: 30, fontWeight: 'bold'}}>Thank You !</Text>
+                            <Text style={{color: colors.text_white, fontSize: 30, fontWeight: 'bold', marginLeft:30}}>Thank You !</Text>
                             <View style = {{alignItems: 'center', justifyContent: 'center', marginTop: 50}}>
                                 <Text style={{color: colors.text_white, fontSize: 20}}>
-                                    Your booking is <Text styles={{fontSize: 16, fontWeight: 'bold'}}>{route.params.date}</Text>
+                                    Your feedback has been sent !
                                 </Text>
                             </View>
                         </View>
@@ -51,7 +49,7 @@ const Confirm_Message = ({navigation, route}) => {
     )
 }
 
-export default Confirm_Message
+export default Confirm_Feedback
 
 const styles = StyleSheet.create({
     container: {

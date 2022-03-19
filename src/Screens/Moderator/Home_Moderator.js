@@ -5,15 +5,23 @@ import {colors} from '../../GlobalStyle/styles'
 import {Avatar, Icon, withBadge} from 'react-native-elements'
 import {auth, db} from '../../../firebase'
 import { collection, getDocs} from  '@firebase/firestore'
+import { LogBox } from 'react-native';
+
+
+LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+  ]);
 
 const Home_Moderator = ({navigation}) => {
 
     
     const userCollectionRef = collection(db, "users")
+    const userCollectionBank = collection(db, "bank_account")
     const [users, setUsers] = useState([])
     const [count, setCount] = useState(0)
     const BadgeIcon = withBadge(count)(Icon)
     const [activeMec, setActiveMec] = useState([])
+    const [bankAccount, setBankAccount] = useState([])
  
 
     useEffect(() => {
@@ -21,11 +29,21 @@ const Home_Moderator = ({navigation}) => {
             const getUsers = async() => {
                 const data = await getDocs(userCollectionRef)
                 const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
-                data2.forEach(activeMec => activeMec.activeMechanic == "No" ? setCount(count + 1) : null)
+                //data2.forEach(activeMec => activeMec.activeMechanic == "No" ? setCount(count + 1) : null)
                 setUsers(data2.find(user => user.email === auth.currentUser.email))
                 setActiveMec(data2.filter(user => user.activeMechanic === "No"))
               }
             getUsers()
+
+
+            const countService = async() => {
+                const data = await getDocs(userCollectionBank)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setCount(0)
+                data2.forEach(countMod => countMod.mod_approval == null ? setCount(count + 1) : null)
+                setBankAccount(data2.filter(e => e.id === route.params.id))
+            }
+            countService()
         })
         return unsubscribe;
     }, [navigation])
@@ -142,6 +160,7 @@ const Home_Moderator = ({navigation}) => {
                     <ScrollView>
                         {activeMec.map(active => (
                             <TouchableOpacity
+                                key = {active.id}
                                 onPress={() => navigation.navigate("Active_Mec_Account", {data: activeMec, id: active.id})}
                             >
                             <View style={styles.announment} key={active.id}>

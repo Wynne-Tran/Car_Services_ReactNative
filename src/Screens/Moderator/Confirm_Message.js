@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity, Image, TextInput  } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity, Image  } from 'react-native'
 import HomeHeader from '../../Components/HomeHeader'
 import {colors, parameters} from '../../GlobalStyle/styles'
 import {Button} from 'react-native-elements'
@@ -7,7 +7,7 @@ import {auth, db} from '../../../firebase'
 import { collection, getDocs} from  '@firebase/firestore'
 
 
-const Confirm_Message = ({navigation, route}) => {
+const Confirm_Message = ({navigation}) => {
 
     return (
         <ImageBackground source={require('../../../assets/images/Background.png')}  style={styles.background}>
@@ -27,7 +27,8 @@ const Confirm_Message = ({navigation, route}) => {
                             <Text style={{color: colors.text_white, fontSize: 30, fontWeight: 'bold'}}>Thank You !</Text>
                             <View style = {{alignItems: 'center', justifyContent: 'center', marginTop: 50}}>
                                 <Text style={{color: colors.text_white, fontSize: 20}}>
-                                    Your booking is <Text styles={{fontSize: 16, fontWeight: 'bold'}}>{route.params.date}</Text>
+                                    Your confirmation will send to customer and mechanic...   
+                                    🚀🚀🚀 
                                 </Text>
                             </View>
                         </View>

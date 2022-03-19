@@ -60,17 +60,17 @@ export default function RegisterForm (Props) {
         try {
           await 
           auth
-            .createUserWithEmailAndPassword(email.toLowerCase(), password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-                createUser(phone, username, email, password)
-                .then(userCredentials => {
-                    const user = userCredentials.user;
-                    console.log("Created user with : ",user.email)
-                    navigation.navigate('SignIn');
-                })
-                .catch( e => console.log(e))
-            })
+          .createUserWithEmailAndPassword(email.toLowerCase(), password)
+          .then(userCredentials => {
+              const user = userCredentials.user;
+              createUser(phone, username, email, password)
+              .then(
+                  console.log(user.email + " account was created"),
+                  Props.navigation.navigate("SignIn")
+              )
+              .catch( e => console.log(e))
+              
+          })
         }
         catch (error) {
           Alert.alert(error.message)

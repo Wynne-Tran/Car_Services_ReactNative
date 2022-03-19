@@ -7,12 +7,31 @@ import {Button} from 'react-native-elements'
 import {db} from '../../../firebase'
 import {updateDoc, doc} from  '@firebase/firestore'
 
-const Home_Moderator = ({navigation}) => {
+const Home_Moderator = ({route, navigation}) => {
 
     const mechanic = route.params.data.filter(x => x.id == route.params.id)
 
     const handleActive = async(id) => {
+        let userDoc = doc(db, "users", id)
+        const newFields = {
+            fullname: mechanic[0].fullname, 
+            username: mechanic[0].username, 
+            email: mechanic[0].email, 
+            password: mechanic[0].password, 
+            role: mechanic[0].role,
+            phone: mechanic[0].phone,
+            address: mechanic[0].address,
+            jobTitle: mechanic[0].jobTitle,
+            vehicle: "",
+            image: mechanic[0].image,
+            experience: mechanic[0].experience,
+            salary: mechanic[0].salary,
+            password: mechanic[0].password, 
+            activeMechanic: "Yes"
+        }
         
+        await updateDoc(userDoc, newFields)
+        navigation.navigate("Home_Moderator")
     }
     return (
         <ImageBackground source={require('../../../assets/images/plainBg.png')}  style={styles.background}>
@@ -30,44 +49,44 @@ const Home_Moderator = ({navigation}) => {
                         rounded
                         avatarStyle = {styles.avatar}
                         size = {85}
-                        //source ={}
+                        source ={{uri: mechanic[0].image}}
                         />
                 </View>
 
                     <View style={{marginTop: 50}}>
                         <View style = {{flexDirection: 'row', marginVertical: 10}}>
                             <Text style={{marginLeft: 50, fontWeight:'bold', color:'black', fontSize:20}}>Full Name: </Text>
-                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}></Text>
+                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}>{mechanic[0].fullname}</Text>
                         </View>
 
                         <View style = {{flexDirection: 'row', marginVertical: 10}}>
                             <Text style={{marginLeft: 50,fontWeight:'bold', color:'black', fontSize:20}}>Username: </Text>
-                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}></Text>
+                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}>{mechanic[0].username}</Text>
                         </View>
 
                         <View style = {{flexDirection: 'row', marginVertical: 10}}>
                             <Text style={{marginLeft: 50, fontWeight:'bold', color:'black', fontSize:20}}>Phone: </Text>
-                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}></Text>
+                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}>{mechanic[0].phone}</Text>
                         </View>
 
                         <View style = {{flexDirection: 'row', marginVertical: 10}}>
                             <Text style={{marginLeft: 50, fontWeight:'bold', color:'black', fontSize:20}}>Address: </Text>
-                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}></Text>
+                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}>{mechanic[0].address}</Text>
                         </View>
 
                         <View style = {{flexDirection: 'row', marginVertical: 10}}>
                             <Text style={{marginLeft: 50,fontWeight:'bold', color:'black', fontSize:20}}>Job Title: </Text>
-                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}></Text>
+                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}>{mechanic[0].jobTitle}</Text>
                         </View>
 
                         <View style = {{flexDirection: 'row', marginVertical: 10}}>
                             <Text style={{marginLeft: 50, fontWeight:'bold', color:'black', fontSize:20}}>Experience: </Text>
-                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}></Text>
+                            <Text style = {{marginLeft: 100,color:'black', fontSize:20}}>{mechanic[0].experience}</Text>
                         </View>
 
                         <View style = {{flexDirection: 'row', marginVertical: 10}}>
                             <Text style={{marginLeft: 50,fontWeight:'bold', color:'black', fontSize:20}}>Salary: </Text>
-                            <Text style = {{marginLeft: 100, color:'black', fontSize:20}}>$/hour</Text>
+                            <Text style = {{marginLeft: 100, color:'black', fontSize:20}}>${mechanic[0].salary}/hour</Text>
                         </View>
 
                         
@@ -79,7 +98,7 @@ const Home_Moderator = ({navigation}) => {
                             title = "Active"
                             buttonStyle = {styles.buttonSignIn}
                             titleStyle = {parameters.buttonTitle}
-                            onPress={() => navigation.navigate("Home_Moderator")}
+                            onPress={() => handleActive(mechanic[0].id)}
                             
                         />
                     </View> 
