@@ -27,13 +27,41 @@ const Booking = ({navigation}) => {
         {id: 12,  label: 'Quick Wax', value: '95', time: "1", isChecked: false },
         {id: 13,  label: 'VIP Wash', value: '175', time: "1", isChecked: false },
         {id: 14,  label: 'Outside Wash', value: '30', time: "1", isChecked: false }]
-
-
     var [date, setDate] = useState(new Date(1604324457992))
+    const [show, setShow] = useState(false);
+    const [total, setTotal] = useState(0)
     const [radioProps, setRadioProps] = useState(data)
 
     
 
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        if(currentDate > Date.now()){
+            setDate(currentDate);
+        }
+        else{
+            Alert.alert("Invalid date !")
+        }
+        
+      };
+    
+      const handleChange = (id) => {
+        let temp = radioProps.map((product) => {
+          if (id === product.id) {
+              if(product.isChecked != true){
+                setTotal(total + parseFloat(product.value))
+              }
+              else{
+                setTotal(total - parseFloat(product.value))
+              }
+            return { ...product, isChecked: !product.isChecked };
+          }
+          return product;
+        });
+        setRadioProps(temp)
+        
+      };
 
     return (
         <ImageBackground source={require('../../../assets/images/plainBg.png')}  style={styles.background}>
@@ -45,6 +73,18 @@ const Booking = ({navigation}) => {
                 />
 
                 <HomeHeader navigation={navigation} role = "Booking"/>
+                
+                    {/*
+                    <DateTimePicker
+                        value={date}
+                        mode={'date'}
+                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                        is24Hour={true}
+                        onChange={onChange}
+                        style={styles.datePicker}
+                        />
+                    
+                    */}
 
                         <View>
                             <Text style={{fontWeight:'bold', marginLeft: 20}}>Date & Time</Text>
@@ -56,7 +96,7 @@ const Booking = ({navigation}) => {
                                     style={{marginLeft: 120, }}
                                     mode = 'datetime'
                                     value={date}
-                                    
+                                    onChange={onChange}
                                 />
 
                             <View style={styles.message}>
@@ -93,7 +133,7 @@ const Booking = ({navigation}) => {
                                 <View style={{width: 320, height: 50, backgroundColor: colors.Card_Violet, borderRadius: 12, marginTop: 10, alignItems: 'center'}}>
                                         <View style={{flexDirection: 'row', width: 300, height: 50, backgroundColor: colors.Card_LightViolet, justifyContent: 'space-between', alignItems: 'center'}}>
                                             <Text style={{fontSize: 14, fontWeight: 'bold', marginLeft: 20}}>Total</Text> 
-                                            <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 20}}>$payment</Text>
+                                            <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 20}}>${total}</Text>
 
                                         </View>
                                     </View>
@@ -101,8 +141,8 @@ const Booking = ({navigation}) => {
                                     <View style={{width: 320, height: 50, backgroundColor: colors.Card_Violet, borderRadius: 12, marginTop: 5, alignItems: 'center'}}>
                                         <View style={{flexDirection: 'row', width: 300, height: 50, backgroundColor: colors.Card_LightViolet, justifyContent: 'space-around', alignItems: 'center'}}>
                                             <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 20}}>Payment</Text> 
-                                            <Text style={{fontSize: 14, fontWeight: 'bold', color: 'red'}}>(+ Tax) $payment</Text> 
-                                            <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 5}}>$payment</Text>
+                                            <Text style={{fontSize: 14, fontWeight: 'bold', color: 'red'}}>(+ Tax) ${total * 0.13}</Text> 
+                                            <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 5}}>${total + (total * 0.13)}</Text>
 
                                         </View>
                                     </View>
@@ -115,7 +155,7 @@ const Booking = ({navigation}) => {
                                     title = "Check Out"
                                     buttonStyle = {styles.buttonSignIn}
                                     titleStyle = {parameters.buttonTitle}
-                                    onPress={() => navigation.navigate("Checkout", )}
+                                    onPress={() => navigation.navigate("Checkout", {checkout: total + (total * 0.13), services: radioProps , date: date.toUTCString()})}
                                     
                                 />
                             </View> 

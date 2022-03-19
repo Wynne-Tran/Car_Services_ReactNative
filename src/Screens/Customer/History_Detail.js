@@ -9,8 +9,29 @@ import moment from 'moment'
 
 
 const History_Detail = ({navigation, route}) => {
+    const userCollectionRef = collection(db, "users")
+    const [users, setUsers] = useState([])
+    const serviceCollectionRef = collection(db, "bank_account")
+    const [count, setCount] = useState([])
     
 
+
+    useEffect(() => {
+        const getUsers = async() => {
+            const data = await getDocs(userCollectionRef)
+            const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+            setUsers( data2.find(user => user.email === auth.currentUser.email))
+          }
+        getUsers()
+
+        const countService = async() => {
+            const data = await getDocs(serviceCollectionRef)
+            const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+            setCount(data2.filter(e => e.id === route.params.id))
+        }
+        countService()
+        
+    }, [navigation])
 
     return (
         <ImageBackground source={require('../../../assets/images/plainBg.png')}  style={styles.background}>
@@ -23,80 +44,81 @@ const History_Detail = ({navigation, route}) => {
 
                 <HomeHeader navigation={navigation} role = "History Detail"/>
     
-                <View style={styles.message}>
-                <Text style={{color: colors.text_white, fontSize: 20, fontWeight: 'bold', paddingVertical: 10, marginLeft: 30}}>Review Submission</Text>
-                    <View style = {{alignItems: 'center'}}>
-                        <View style={{width: 200, justifyContent: 'center', alignItems: 'center', height: 50, borderRadius: 50, backgroundColor: "#C8372D"}}>
-                            <Text style={{color: colors.text_white, fontSize: 18, alignItems: 'center', fontWeight: 'bold'}}>{count[0].service.length} Services</Text>
+                {count[0] != undefined && (
+                    <View style={styles.message}>
+                    <Text style={{color: colors.text_white, fontSize: 20, fontWeight: 'bold', paddingVertical: 10, marginLeft: 70}}>Review Submission</Text>
+                        <View style = {{alignItems: 'center'}}>
+                            <View style={{width: 200, justifyContent: 'center', alignItems: 'center', height: 50, borderRadius: 50, backgroundColor: "#C8372D"}}>
+                                <Text style={{color: colors.text_white, fontSize: 18, alignItems: 'center', fontWeight: 'bold'}}>{count[0].service.length} Services</Text>
+                            </View>
+                        </View>
+                    <View style = {{paddingVertical: 10}}>
+                        <Text style={{color: "#C8372D", fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Customer</Text>
+                        <View style={{marginLeft: 15, marginRight: 10}}>
+                            <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>{users.username}</Text>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>Phone: {users.phone}</Text>
+                            </View>
+                            <Text style = {{color: colors.text_white, fontSize: 15}}>{users.address}</Text>
                         </View>
                     </View>
-                <View style = {{paddingVertical: 10}}>
-                    <Text style={{color: "#C8372D", fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Customer</Text>
-                    <View style={{marginLeft: 15, marginRight: 10}}>
-                        <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>username</Text>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>phone</Text>
-                        </View>
-                        <Text style = {{color: colors.text_white, fontSize: 15}}>address</Text>
-                    </View>
-                </View>
-
-                <View>
-                    <Text style={{color: colors.text_white, fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Pay Bill</Text>
-                    <View style={{marginLeft: 15, marginRight: 10}}>
-                        <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>$checkout</Text>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>createAt time</Text>
+    
+                    <View>
+                        <Text style={{color: colors.text_white, fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Pay Bill</Text>
+                        <View style={{marginLeft: 15, marginRight: 10}}>
+                            <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>${count[0].checkout}</Text>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>{moment(count[0].createAt).format("DD/MM/YYYY")}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-
-                <View style = {{marginVertical: 10}}>
-                    <Text style={{color: colors.text_white, fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Appointment</Text>
-                    <View style={{marginLeft: 15, marginRight: 10}}>
-                        <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>appointmentAt</Text>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>appointmentAt</Text>
+    
+                    <View style = {{marginVertical: 10}}>
+                        <Text style={{color: colors.text_white, fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Appointment</Text>
+                        <View style={{marginLeft: 15, marginRight: 10}}>
+                            <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>{moment(count[0].appointmentAt).format("DD/MM/YYYY")}</Text>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>{moment(count[0].appointmentAt).format('hh:mm')}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-
-                <View style = {{marginVertical: 10}}>
-                    <View style = {{alignItems: 'center'}}>
-                        <View style={{width: '60%', justifyContent: 'center', alignItems: 'center', height: 50, borderRadius: 50, backgroundColor: "#2264D1"}}>
-                            <Text style={{color: colors.text_white, fontSize: 18, alignItems: 'center', fontWeight: 'bold'}}> 🚗vehicle</Text>
+    
+                    <View style = {{marginVertical: 10}}>
+                        <View style = {{alignItems: 'center'}}>
+                            <View style={{width: '60%', justifyContent: 'center', alignItems: 'center', height: 50, borderRadius: 50, backgroundColor: "#2264D1"}}>
+                                <Text style={{color: colors.text_white, fontSize: 18, alignItems: 'center', fontWeight: 'bold'}}> 🚗 {count[0].vehicle}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-
-                <View style = {{paddingVertical: 10}}>
-                    <Text style={{color: "#2264D1", fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Mechanican</Text>
-                    <View style={{marginLeft: 15, marginRight: 10}}>
-                        <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>mec_approval</Text>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>mec_phone</Text>
+    
+                    <View style = {{paddingVertical: 10}}>
+                        <Text style={{color: "#2264D1", fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Mechanican</Text>
+                        <View style={{marginLeft: 15, marginRight: 10}}>
+                            <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>{count[0].mec_name}</Text>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>Phone: {count[0].mec_phone}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-
-                <View style = {{marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text style={{color: colors.text_white, fontSize: 15, marginLeft: 10, fontWeight: 'bold'}}>Date</Text>
-                    <Text style = {{color: colors.text_white, fontSize: 15, marginRight: 10}}>day_approval</Text>
-                </View>
-
-                <View style = {{paddingVertical: 10}}>
-                    <Text style={{color: "#2264D1", fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Status</Text>
-                    <View style={{marginLeft: 15, marginRight: 10}}>
-                        <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                            <Text style = {{color: colors.text_white, fontSize: 15}}>status</Text>
+    
+                    <View style = {{marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{color: colors.text_white, fontSize: 15, marginLeft: 10, fontWeight: 'bold'}}>Date</Text>
+                        <Text style = {{color: colors.text_white, fontSize: 15, marginRight: 10}}>{moment(count[0].appointmentAt).format("DD/MM/YYYY")}</Text>
+                    </View>
+    
+                    <View style = {{paddingVertical: 10}}>
+                        <Text style={{color: "#2264D1", fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>Status</Text>
+                        <View style={{marginLeft: 15, marginRight: 10}}>
+                            <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+                                <Text style = {{color: colors.text_white, fontSize: 15}}>{count[0].status == "" ? "In Process" : count[0].status}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-
-                </View>
+    
+                    </View>
+                )}
 
                 
-
                 <View style = {{flexDirection: "row", marginLeft: 20, marginHorizontal: 20, marginTop: 30, justifyContent: 'space-evenly'}}>
                     
                     <Button 
@@ -135,7 +157,7 @@ const styles = StyleSheet.create({
         width: "90%",
         borderRadius: 20,
         marginLeft: "5%",
-        height: 580,
+        height: 550,
         marginTop: 20
     },
     buttonSignIn: {

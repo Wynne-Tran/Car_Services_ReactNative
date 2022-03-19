@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity } from 'react-native'
 import HomeHeader from '../../Components/HomeHeader'
 import {colors} from '../../GlobalStyle/styles'
-import {Avatar, Icon} from 'react-native-elements'
+import {Avatar, Button} from 'react-native-elements'
 import {auth, db} from '../../../firebase'
 import { collection, getDocs} from  '@firebase/firestore'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -11,7 +11,9 @@ const Home_Customer = ({navigation}) => {
 
     const userCollectionRef = collection(db, "users")
     const [users, setUsers] = useState([])
-
+    const serviceCollectionRef = collection(db, "bank_account")
+    const [count, setCount] = useState(0)
+    const [bankAccount, setBankAccount] = useState([])
 
 
     useEffect(() => {
@@ -23,6 +25,13 @@ const Home_Customer = ({navigation}) => {
               }
             getUsers()
 
+            const countService = async() => {
+                const data = await getDocs(serviceCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setCount(data2.filter(e => e.email === auth.currentUser.email).length)
+                setBankAccount(data2.filter(e => e.email === auth.currentUser.email));
+            }
+            countService()
         })
         return unsubscribe;
         
@@ -47,7 +56,7 @@ const Home_Customer = ({navigation}) => {
                             <Text style ={{color: colors.text_white, fontWeight: 'bold'}}>Edit</Text>
                         </View>
                     </TouchableOpacity>
-                    <View>
+                    <View style={{justifyContent: 'center'}}>
                         <View style = {{flexDirection: 'column', alignItems: 'center', marginTop: -28}}>
                             
                             <View>
@@ -59,7 +68,7 @@ const Home_Customer = ({navigation}) => {
                             />
                             
                             </View>
-                            <View>
+                            <View >
                                 <Text style={{ marginLeft: 15, fontWeight:'bold', color:colors.text_white, fontSize:30}}>{users.username}</Text>
                                 <Text style = {{color: colors.text_white, fontSize:14}}>{auth.currentUser.email}</Text>
                             </View>
@@ -68,7 +77,7 @@ const Home_Customer = ({navigation}) => {
                         
                         <View style={{alignItems: 'center'}}>
                             <Text style = {{color: colors.text_white, fontSize:18, marginHorizontal: 10}}>
-                                You requested <Text style={{fontSize: 25, fontWeight: 'bold', color:'red'}}>0</Text> services !
+                                You requested <Text style={{fontSize: 25, fontWeight: 'bold', color:'red'}}>{count}</Text> services !
                             </Text>
                         </View>
                     </View>
@@ -85,11 +94,31 @@ const Home_Customer = ({navigation}) => {
 
                 <View style={styles.announment2}>
                     <ScrollView style={{padding: 10}}>
-                        <View style={styles.message_red}>
-                            <ImageBackground source={require('../../../assets/images/note_violet.png')}  style={styles.background2}>
-                                <Text style={{color: colors.text_white, fontWeight: 'bold', marginLeft: '20%', fontSize: 18}}>Welcome {users.username} !</Text>
-                            </ImageBackground>
-                        </View>
+                        {
+                            bankAccount.map(e => e.mec_message != "" ? (
+                                <>
+                                    <TouchableOpacity style={styles.message_red}
+                                        key = {e.id}
+                                        onPress={() => navigation.navigate('Feedback', {info: e})}
+                                    >
+                                        <ImageBackground source={require('../../../assets/images/Green.png')}  style={styles.background2}>
+                                            <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>{e.mec_message}</Text>
+                                        </ImageBackground>
+                                    </TouchableOpacity>
+                                </>
+                                
+                            ) : 
+                            e.mod_approval != "" &&
+                            <TouchableOpacity style={styles.message_red}
+                                    onPress={() => navigation.navigate('Confirm_Message')}
+                                >
+                                    <ImageBackground source={require('../../../assets/images/info.png')}  style={styles.background2}>
+                                        <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your Booking is approved !</Text>
+                                    </ImageBackground>
+                                </TouchableOpacity>
+                            )
+                    
+                        }
                         
                     </ScrollView>
                 </View>

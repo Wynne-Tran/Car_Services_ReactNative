@@ -7,7 +7,7 @@ import SignIn from '../Screens/AuthScreen/SignIn';
 import RegisterForm from '../Screens/AuthScreen/RegisterForm';
 import Home_Moderator from '../Screens/Moderator/Home_Moderator'
 import DrawerNavigator_Moderator from './DrawerNavigator_Moderator'
-import ForgotPassword from '../Screens/AuthScreen/ForgotPassword'
+import ForgotPassword from '../Screens/AuthScreen/ForgotPassword';
 import DrawerNavigator_Mechanic from './DrawerNavigator_Mechanic';
 import DrawerNavigator_Customer from './DrawerNavigator_Customer'
 import Home_Mechanic from '../Screens/Mechanic/Home_Mechanic';

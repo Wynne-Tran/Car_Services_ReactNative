@@ -1,30 +1,39 @@
 import React, {useState, useEffect} from 'react'
-import { StyleSheet, Text, View, StatusBar, ImageBackground, TouchableOpacity, ScrollView  } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, ImageBackground, ScrollView, TouchableOpacity,  } from 'react-native'
 import HomeHeader from '../../Components/HomeHeader'
 import {colors, parameters} from '../../GlobalStyle/styles'
-import { Icon, Button} from 'react-native-elements';
+import { CheckBox, Icon, Button} from 'react-native-elements';
+import { LogBox } from 'react-native';
+import { collection, getDocs, updateDoc, doc} from  '@firebase/firestore'
 import {auth, db} from '../../../firebase'
-import { collection, getDocs} from  '@firebase/firestore'
-import moment from 'moment';
+import moment from 'moment'
+
+LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+  ]);
 
 
-const History_Services = ({navigation}) => {
-    
-    const serviceCollectionRef = collection(db, "bank_account")
+const Earns= ({navigation}) => {
+
+    const userCollectionRef = collection(db, "users")
     const [users, setUsers] = useState([])
-
+    const serviceCollectionRef = collection(db, "bank_account")
+    const [count, setCount] = useState([])
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
+        const getUsers = async() => {
+            const data = await getDocs(userCollectionRef)
+            const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+            setUsers( data2.find(user => user.email === auth.currentUser.email))
+          }
+        getUsers()
 
-            const userService = async() => {
-                const data = await getDocs(serviceCollectionRef)
-                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
-                setUsers(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
-            }
-            userService()
-        })
-        return unsubscribe;
+        const countService = async() => {
+            const data = await getDocs(serviceCollectionRef)
+            const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+            setCount(data2.filter(e => e.mec_email=== auth.currentUser.email))
+        }
+        countService()
         
     }, [navigation])
 
@@ -37,19 +46,20 @@ const History_Services = ({navigation}) => {
                     backgroundColor="rgba(255, 140, 82, 1)"
                 />
 
-                <HomeHeader navigation={navigation} role = "History Services"/>
+                <HomeHeader navigation={navigation} role = "History Earns"/>
 
                 <View style={styles.message}>
                 <ScrollView>
-                    {users.map(e => (
+                    {count.map(e => (
                     <View key = {e.id}   style={{width: 320, height: 50, backgroundColor: colors.Card_Violet, borderRadius: 12, marginTop: 10, alignItems: 'center'}}>
                         <TouchableOpacity
                             key = {e.id}
-                            onPress={()=> navigation.navigate("History_Detail", {bank_account: e})}
+                            onPress={()=> navigation.navigate("History_Detail", {id: e.id})}
                         >
                             <View style={{flexDirection: 'row', width: 300, height: 60, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center'}}>
-                                <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 20}}>{moment(e.createAt).format('DD-MM-YYYY')}</Text> 
-                                <Text style={{color: 'red', fontSize: 14, fontWeight: 'bold', marginRight: 10}}>{e.service.length} Services Booking</Text>
+                                <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 20}}>{moment(e.appointmentAt).format('DD-MM-YYYY')}</Text> 
+                                <Text style={{fontSize: 14, fontWeight: 'bold', marginRight: 10}}>{e.service.length} Services</Text>
+                                <Text style={{color: 'red', fontSize: 14, fontWeight: 'bold', marginRight: 10}}>${e.mec_payment}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -75,7 +85,7 @@ const History_Services = ({navigation}) => {
     )
 }
 
-export default History_Services
+export default Earns
 
 const styles = StyleSheet.create({
     container: {
@@ -101,9 +111,17 @@ const styles = StyleSheet.create({
         width: '90%',
         borderRadius: 20,
         marginLeft: "5%",
-        height: 400,
+        height: 300,
         marginTop: 50,
         alignItems: 'center'
+    },
+    message2:{
+        backgroundColor: 'transparent',
+        width: '90%',
+        marginLeft: "5%",
+        height: 200,
+        alignItems: 'center',
+        marginTop: 20
     },
     buttonSignIn: {
         backgroundColor: colors.Card_Violet,
@@ -111,7 +129,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.button_violet,
         height: 50,
-        width: 100,
+        width: 200,
         fontWeight: 'bold'
       },
       buttonTitle: {

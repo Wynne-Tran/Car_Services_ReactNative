@@ -8,7 +8,7 @@ import moment from 'moment'
 import { collection, getDocs, updateDoc, doc} from  '@firebase/firestore'
 
 
-const Approve_Submission = ({navigation, route}) => {
+const Apply_Tasks = ({navigation, route}) => {
 
 
     const userCollectionRef = collection(db, "users")
@@ -36,7 +36,7 @@ const Approve_Submission = ({navigation, route}) => {
 
     const applyTask = async() => {
         let bankDoc = doc(db, "bank_account", count[0].id)
-        let payment = parseFloat(count[0].checkout) - parseFloat(count[0].mec_payment);
+        const payment = parseFloat(count[0].total_time_works) * parseFloat(users.salary);
         let updateBankAccount = {
             email: count[0].email, 
             fullname: count[0].fullname,
@@ -49,25 +49,26 @@ const Approve_Submission = ({navigation, route}) => {
             cvv_card: count[0].cvv_card,
             checkout: count[0].checkout,
             service: count[0].service,
-            payment: payment,
+            payment: count[0].payment,
             appointmentAt: count[0].appointmentAt,
             status: count[0].status,
             createAt: count[0].createAt,
-            mec_name : count[0].mec_name,
-            mec_approval: count[0].mec_approval,
-            mec_phone: count[0].mec_phone,
-            mec_email: count[0].mec_email,
-            mec_message: count[0].mec_message,
-            mec_salary: count[0].mec_salary,
-            mod_email: auth.currentUser.email,
-            mod_approval: "Yes",
+            mec_name : users.fullname,
+            mec_approval: "Yes",
+            mec_phone: users.phone,
+            mec_email: users.email,
+            mec_message: count[0].payment,
+            mec_salary:users.salary,
+            mod_email: "",
+            mod_approval: "",
             day_approval: new Date(),
             total_time_works: count[0].total_time_works,
-            mec_payment:  count[0].mec_payment,
-            cus_feedback: count[0].cus_feedback,
-            cus_rate: count[0].cus_rate,
+            mec_payment:  payment.toString(),
+            cus_feedback: "",
+            cus_rate: "",
         }
-        await updateDoc(bankDoc, updateBankAccount);
+        await updateDoc(bankDoc, updateBankAccount)
+        
     }
     
     return (
@@ -94,12 +95,8 @@ const Approve_Submission = ({navigation, route}) => {
                                     <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
                                         <Text style = {{color: colors.text_white, fontSize: 15}}>{count[0].fullname}</Text>
                                         <Text style = {{color: colors.text_white, fontSize: 15}}>{moment(count[0].appointmentAt).format("DD/MM/YYYY hh:mm")}</Text>
-                                        
                                     </View>
-                                    <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                                        <Text style = {{color: colors.text_white, fontSize: 15}}>{count[0].address}</Text>
-                                        <Text style = {{color: colors.text_white, fontSize: 15}}>Cus Payment: ${count[0].checkout}</Text>
-                                    </View>
+                                    <Text style = {{color: colors.text_white, fontSize: 15}}>{count[0].address}</Text>
                                 </View>
                             </View>
             
@@ -115,25 +112,20 @@ const Approve_Submission = ({navigation, route}) => {
                             </View>
 
                             {count[0].mec_approval != "" && (
-                                <View style = {{paddingVertical: 15}}>
+                                <View style = {{paddingVertical: 30}}>
                                 <Text style={{color: "#C8372D", fontSize: 20, marginLeft: 10, fontWeight: 'bold'}}>MECHANIC DETAIL</Text>
                                 <View style={{marginLeft: 15, marginRight: 10}}>
                                     <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
                                         <Text style = {{color: colors.text_white, fontSize: 15}}>{count[0].mec_name}</Text>
                                         <Text style = {{color: colors.text_white, fontSize: 15}}>{count[0].mec_phone}</Text>
                                     </View>
-
-                                    <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-                                        <Text style = {{color: colors.text_white, fontSize: 15}}>Status: {count[0].status}</Text>
-                                        <Text style = {{color: colors.text_white, fontSize: 15}}>Mec Payment: ${count[0].mec_payment}</Text>
-                                    </View>
-                                    
+                                    <Text style = {{color: colors.text_white, fontSize: 15}}>Status: {count[0].status}</Text>
                                 </View>
                                 </View>
                             )}
 
-                            <View style = {{flexDirection: "row", marginLeft: 20, marginHorizontal: 20, marginTop: 50, justifyContent: 'space-evenly'}}>
-                            {count[0].mod_approval != null ? (
+                            <View style = {{flexDirection: "row", marginLeft: 20, marginHorizontal: 20, marginTop: 30, justifyContent: 'space-evenly'}}>
+                            {count[0].mec_approval != "" ? (
                                     <Button 
                                     title = "Back"
                                     buttonStyle = {styles.buttonSignIn}
@@ -145,10 +137,10 @@ const Approve_Submission = ({navigation, route}) => {
                                 ) : (
                                     
                                     <Button 
-                                    title = "Approve"
+                                    title = "Apply"
                                     buttonStyle = {styles.buttonSignIn}
                                     titleStyle = {parameters.buttonTitle}
-                                    onPress={() => {applyTask(); navigation.navigate('Confirm_Message')}}
+                                    onPress={() => {applyTask(); navigation.navigate("Confirm_Message");}}
                                     
                                 />
                                 )}
@@ -163,7 +155,7 @@ const Approve_Submission = ({navigation, route}) => {
     )
 }
 
-export default Approve_Submission
+export default Apply_Tasks
 
 const styles = StyleSheet.create({
     container: {

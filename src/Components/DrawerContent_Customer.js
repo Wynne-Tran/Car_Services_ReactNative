@@ -92,7 +92,7 @@ const DrawerContent_Customer = (props) => {
                         onPress = {() => props.navigation.navigate("Services")}
                     />
 
-                    <DrawerItem 
+                    {/* <DrawerItem 
                         label = "Support"
                         icon = {({color, size}) => (
                             <Icon 
@@ -104,7 +104,7 @@ const DrawerContent_Customer = (props) => {
                             />
                         )}
                         onPress={() => props.navigation.navigate("Support")}
-                    />
+                    /> */}
 
 
                     <DrawerItem 

@@ -11,6 +11,9 @@ const Home_Mechanic = ({navigation}) => {
 
     const userCollectionRef = collection(db, "users")
     const [users, setUsers] = useState([])
+    const serviceCollectionRef = collection(db, "bank_account")
+    const [count, setCount] = useState(0)
+    const [bankAccount, setBankAccount] = useState([])
 
 
     useEffect(() => {
@@ -21,10 +24,18 @@ const Home_Mechanic = ({navigation}) => {
                 setUsers( data2.find(user => user.email === auth.currentUser.email))
               }
             getUsers()
+
+            const countService = async() => {
+                const data = await getDocs(serviceCollectionRef)
+                const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
+                setBankAccount(data2.filter(e => e.mec_email === auth.currentUser.email));
+            }
+            countService()
         })
         return unsubscribe;
         
     }, [navigation])
+
 
     const findTask = () => {
         users.activeMechanic == "Yes" ? navigation.navigate("Find_Tasks") : Alert.alert("Edit profile to access app !")
@@ -228,6 +239,23 @@ const Home_Mechanic = ({navigation}) => {
                             </ImageBackground>
                         </View>
                         )}
+
+{
+                            bankAccount.map(e => e.mod_approval != "" ? (
+                                <TouchableOpacity style={styles.message_red}
+                                    onPress={() => navigation.navigate("Apply_Tasks", {id: e.id})}
+                                >
+                                    <ImageBackground source={require('../../../assets/images/info.png')}  style={styles.background2}>
+                                        <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your application is approved !</Text>
+                                    </ImageBackground>
+                                </TouchableOpacity>
+                                
+                            ) : 
+                            null
+                            
+                            )
+                    
+                        }
 
                         
                     </ScrollView>
