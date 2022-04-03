@@ -138,6 +138,18 @@ const DrawerContent_Mechanic = (props) => {
                         )}
                         onPress = {() => props.navigation.navigate("Change_Password")}
                     />
+                    <DrawerItem 
+                        label = "Contact Support"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "piggy-bank"
+                                color = {color}
+                                size = {size}
+                            />
+                        )}
+                        onPress={() => props.navigation.navigate("Contact_Mechanic_Support")}
+                    /> 
 
 
                     

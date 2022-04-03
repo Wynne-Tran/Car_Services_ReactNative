@@ -133,7 +133,7 @@ export default function RegisterForm (Props) {
                                 autoFocus = {true}
                                 onChangeText = {props.handleChange('phone')}
                                 value = {props.values.phone}
-                                keyboardType='number-pad'
+                                keyboardType='phone-pad'
                             />
                         </View>
 
@@ -190,7 +190,7 @@ export default function RegisterForm (Props) {
                                         name= {rightIcon}
                                         iconStyle = {{color:colors.grey3}}
                                         type = "material"
-                                        style = {{marginRight: 10}}
+                                        style = {{marginRight: 20}}
                                         onPress={handlePasswordVisibility}
                                     />
                                 </Animatable.View>
@@ -203,7 +203,7 @@ export default function RegisterForm (Props) {
                                     name="lock"
                                     iconStyle = {{color:colors.grey3}}
                                     type = "material"
-                                    styles = {{marginRight: 10}}
+                                    styles = {{marginRight: 20}}
                                 />
                             </Animatable.View>
                             <TextInput 
