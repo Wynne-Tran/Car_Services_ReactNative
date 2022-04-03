@@ -76,7 +76,7 @@ export default function SignIn ({navigation}) {
                     >
                     { (props)=>(
                 <View style = {styles.greeting}>
-                    <Text style = {{fontSize:36, color: colors.text_white, fontWeight:'bold', marginLeft: "30%", }}>Log In</Text>
+                    <Text style = {{fontSize:36, color: colors.text_white, fontWeight:'bold',textAlign:'center' }}>Sign In</Text>
                     <View style = {{marginTop: 10}}>
                     <View>
                         <TextInput 
@@ -86,17 +86,11 @@ export default function SignIn ({navigation}) {
                             ref = {textInput1}
                             onChangeText = {props.handleChange('email')}
                             value ={props.values.email}
+                            autoCapitalize='none'
+                            autoCorrect={false}
                         />
                     </View>
                     <View style = {styles.TextInput2}>
-                        <Animatable.View animation={textInput2Fossued ? "" : "fadeInLeft"} duration={400} >
-                            <Icon 
-                                name="lock"
-                                iconStyle = {{color:colors.grey3}}
-                                type = "material"
-                                styles = {{}}
-                            />
-                        </Animatable.View>
                         <TextInput 
                                 style = {{width: "80%", color: colors.text_white}}
                                 placeholder='Password'
@@ -133,7 +127,7 @@ export default function SignIn ({navigation}) {
                             onPress = {() => {navigation.navigate("Landing")}}
                         />
                         <Button 
-                            title = "LogIn"
+                            title = "Sign in"
                             buttonStyle = {styles.buttonSignIn}
                             titleStyle = {parameters.buttonTitle}
                             onPress={props.handleSubmit}
@@ -146,15 +140,10 @@ export default function SignIn ({navigation}) {
                             navigation.navigate("ForgotPassword")
                         }}
                     >
-                        <View style = {{alignItems: "center", marginTop: 20}}>
+                        <View style = {{alignItems: "center", marginTop: 20,marginBottom:20}}>
                             <Text style = {{...styles.text1, textDecorationLine: "underline"}}>Forgot Password ?</Text>
                         </View>
                     </TouchableOpacity>
-
-                    <View style = {{marginTop: 20, marginBottom: 20}}>
-                        <Text style = {{fontSize: 18, marginLeft: 20}}>LogIn with</Text>
-                    </View>
-                    
                 </View>    
                 </View>)}
                 </Formik>

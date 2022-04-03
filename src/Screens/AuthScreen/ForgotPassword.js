@@ -5,201 +5,41 @@ import { Icon, Button} from 'react-native-elements';
 import * as Animatable from 'react-native-animatable'
 import {auth, db} from '../../../firebase'
 import {Formik} from 'formik'
-import { collection, getDocs, updateDoc, doc} from  '@firebase/firestore'
-
-
+import {getAuth,sendPasswordResetEmail} from 'firebase/auth'
 
 export default function ForgotPassword ({navigation}) {
 
-    const[textInput2Fossued, setTextInput2Fossued] = useState(false)
-    const [passwordFocussed, setPassorFocussed] = useState(false)
-    const [passwordBlurded, setPasswordBlurded] = useState(false)
-    const userCollectionRef = collection(db, "users")
-    const [users, setUsers] = useState([])
-    const [passwordVisibility, setPasswordVisibility] = useState(true);
-    const [rightIcon, setRightIcon] = useState('visibility-off');
+    const [email,setEmail ] = useState();
 
-
-    useEffect(() => {
-        const getUsers = async() => {
-            const data = await getDocs(userCollectionRef)
-            setUsers(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
-          }
-        getUsers()
-        
-    }, [])
-
-    const handlePasswordVisibility = () => {
-        if (rightIcon === 'visibility-off') {
-          setRightIcon('visibility');
-          setPasswordVisibility(!passwordVisibility);
-        } else if (rightIcon === 'visibility') {
-          setRightIcon('visibility-off');
-          setPasswordVisibility(!passwordVisibility);
-        }
-      
-    
-        return {
-            passwordVisibility,
-            rightIcon,
-            handlePasswordVisibility
-        };
-    };
-
-    const updatePass = async(id, newPass) => {
-        const updatePass = doc(db, "users", id)
-        const userDoc = users.filter(user => user.id === id)
-        const newFields = {
-            fullname: "", 
-            username: userDoc[0].username, 
-            email: userDoc[0].email, 
-            password: userDoc[0].password, 
-            role: userDoc[0].role,
-            phone: userDoc[0].phone,
-            address: userDoc[0].address,
-            jobTitle: "",
-            vehicle: "",
-            image: userDoc[0].image,
-            experience: "",
-            salary: 0.0,
-            password: newPass, 
-            activeMechanic: ""
-        }
-
-        auth
-        .signInWithEmailAndPassword(userDoc[0].email, userDoc[0].password)
-        .then((userCredential) => userCredential.user.updatePassword(newPass))
-        .catch( e => console.log(e))
-
-        
-        await updateDoc(updatePass, newFields)
-        
-        
-        
-    }
+        handleSubmit = (email) => {
+            try {
+                sendPasswordResetEmail(auth,email)
+                .then(()=> {
+                    alert("Password reset link sent to " + email)
+                }).then(()=> navigation.navigate("SignIn"))
+            }catch(error){
+                alert(error)
+            }
+            
+        }    
 
     return (
         <ImageBackground source={require('../../../assets/images/Landing.png')}  style={styles.background}>
             <ScrollView style={styles.container}>
                 <StatusBar style="auto" />
-                <Formik 
-                initialValues = {{email: '', phone: '', newPass: '', confirmPass: ''}}
-                onSubmit = {(value)=>{
-
-                    const findEmail = users.filter(user => user.email === value.email.toLowerCase())
-                    if(findEmail !== null && findEmail[0].phone === value.phone){
-                        if(value.newPass == value.confirmPass){
-                            updatePass(findEmail[0].id, value.newPass)
-                            Alert.alert("Password was changed !")
-                            navigation.goBack()
-                        }
-                        else{
-                            Alert.alert("Confirm password doesnt match !")
-                        }
-                    }
-                    else{
-                        Alert.alert("Email or Role incorrect !")
-                    }
-                    }}
-
-                    
-                
-                    >
-                    { (props)=>(
+                <Formik >
                 <View style = {styles.greeting}>
-                    <Text style = {{fontSize:36, color: colors.text_white, fontWeight:'bold', marginLeft: "20%", }}>New Password</Text>
-                    <View style = {{marginVertical: 30}}>
+                    <Text style = {{fontSize:30, color: colors.text_white, fontWeight:'bold',textAlign:'center',marginTop:20,marginBottom:30 }}>Reset Your Password</Text>
                     <View>
                         <TextInput 
                             style = {styles.TextInput1}
                             placeholder='Email'
+                            autoCapitalize='none'
                             placeholderTextColor = {colors.text_white}
-                            onChangeText = {props.handleChange('email')}
-                            value ={props.values.email}
+                            value={email}
+                            onChangeText={text => setEmail(text)}
                         />
                     </View>
-                    <View>
-                        <TextInput 
-                            style = {styles.TextInput1}
-                            placeholder='Phone'
-                            placeholderTextColor = {colors.text_white}
-                            onChangeText = {props.handleChange('phone')}
-                            value ={props.values.phone}
-                        />
-                    </View>
-
-                    <View style = {{marginBottom:20}}>
-                            <View style = {styles.TextInput2}>
-
-                                <Animatable.View animation={textInput2Fossued ? "" : "fadeInLeft"} duration={400} >
-                                    <Icon 
-                                        name="lock"
-                                        iconStyle = {{color:colors.grey3}}
-                                        type = "material"
-                                        styles = {{marginRight: 10}}
-                                    />
-                                </Animatable.View>
-
-                                <TextInput 
-                                        //style = {{width: "80%", color: colors.text_white}}
-                                        style = {{flex: 1, color: colors.text_white}}
-                                        placeholder = "New Password"
-                                        placeholderTextColor = {colors.text_white}
-                                        autoFocus = {false}
-                                        onChangeText = {props.handleChange('newPass')}
-                                        value = {props.values.newPass}
-                                        onFocus={() => {setPassorFocussed(true)}}
-                                        onBlur={() => {setPasswordBlurded(true)}}
-                                        secureTextEntry={passwordVisibility}
-                                    />
-
-                                <Animatable.View animation={textInput2Fossued ? "" : "fadeInLeft"} duration={400} >
-                                    <Icon 
-                                        name= {rightIcon}
-                                        iconStyle = {{color:colors.grey3}}
-                                        type = "material"
-                                        style = {{marginRight: 10}}
-                                        onPress={handlePasswordVisibility}
-                                    />
-                                </Animatable.View>
-                            </View>
-                        </View>
-
-                        <View style = {styles.TextInput2}>
-                            <Animatable.View animation={textInput2Fossued ? "" : "fadeInLeft"} duration={400} >
-                                <TouchableOpacity onPress={handlePasswordVisibility}>
-                                    <Icon 
-                                        name="lock"
-                                        iconStyle = {{color:colors.grey3}}
-                                        type = "material"
-                                        styles = {{marginRight: 10}}
-                                    />
-                                </TouchableOpacity>
-                            </Animatable.View>
-                            <TextInput 
-                                    //style = {{width: "80%", color: colors.text_white}}
-                                    style = {{flex: 1, color: colors.text_white}}
-                                    placeholder = "Confirm Password"
-                                    placeholderTextColor = {colors.text_white}
-                                    autoFocus = {false}
-                                    onChangeText = {props.handleChange('confirmPass')}
-                                    value = {props.values.confirmPass}
-                                    onFocus={() => {setPassorFocussed(true)}}
-                                    onBlur={() => {setPasswordBlurded(true)}}
-                                    secureTextEntry ={passwordVisibility}
-                                />
-                            <Animatable.View animation={textInput2Fossued ? "" : "fadeInLeft"} duration={400} >
-                                <TouchableOpacity onPress={handlePasswordVisibility}>
-                                    <Icon 
-                                        name={rightIcon}
-                                        iconStyle = {{color:colors.grey3}}
-                                        type = "material"
-                                        style = {{marginRight: 10}}
-                                    />
-                                </TouchableOpacity>
-                            </Animatable.View>
-                        </View>
-
 
                     <View style = {{flexDirection: "row", marginLeft: 20, marginHorizontal: 20, marginTop: 30, justifyContent: 'space-evenly'}}>
                         <Button 
@@ -210,25 +50,21 @@ export default function ForgotPassword ({navigation}) {
                             onPress = {() => {navigation.navigate("Landing")}}
                         />
                         <Button 
-                            title = "Save"
+                            title = "Reset"
                             buttonStyle = {styles.buttonSignIn}
                             titleStyle = {parameters.buttonTitle}
-                            onPress={props.handleSubmit}
-                            
+                            onPress={() => handleSubmit(email)}                            
                         />
                     </View>
-
-                    
-                </View>    
-                </View>)}
+                </View>  
                 </Formik>
             
             </ScrollView>
        </ImageBackground>
        
 
-    )
-}
+    )}
+
 
 
 const styles = StyleSheet.create({
@@ -274,7 +110,6 @@ const styles = StyleSheet.create({
         color: colors.text_white,
         marginHorizontal:20,
         borderRadius:12,
-        marginBottom:20,
         paddingLeft:15,
         height: 45
       },
@@ -324,7 +159,8 @@ const styles = StyleSheet.create({
         borderColor: colors.button_green,
         height: 50,
         fontWeight: 'bold',
-        width: 100
+        width: 100,
+        marginBottom:20
       },
       buttonSignIn: {
         backgroundColor: colors.button_violet,
@@ -333,7 +169,8 @@ const styles = StyleSheet.create({
         borderColor: colors.button_violet,
         height: 50,
         fontWeight: 'bold',
-        width: 100
+        width: 100,
+        marginBottom:20
       },
       buttonTitle: {
         color: "white",
@@ -343,8 +180,5 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: -3,
         
-
       }
-    
- 
 })

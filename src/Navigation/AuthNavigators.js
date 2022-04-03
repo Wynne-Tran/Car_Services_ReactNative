@@ -12,12 +12,13 @@ import DrawerNavigator_Mechanic from './DrawerNavigator_Mechanic';
 import DrawerNavigator_Customer from './DrawerNavigator_Customer'
 import Home_Mechanic from '../Screens/Mechanic/Home_Mechanic';
 import Home_Customer from '../Screens/Customer/Home_Customer';
+import ContactCustomerSupport from '../Components/ContactCustomerSupport'
+import ContactMechanicSupport from '../Components/ContactMechanicSupport';
 
 
 const AuthStack = createStackNavigator();
 
 const AuthNavigators = () => {
-
 
     return (
         <AuthStack.Navigator>
@@ -119,6 +120,24 @@ const AuthNavigators = () => {
                 name = "Home_Customer"
                 component = {Home_Customer}
                 options = {{
+                    headerShown: false,
+                    ...TransitionPresets.RevealFromBottomAndroid               
+                }}
+            />
+            <AuthStack.Screen 
+                name = "Contact_Customer_Support"
+                component = {ContactCustomerSupport}
+                options = {{
+
+                    headerShown: false,
+                    ...TransitionPresets.RevealFromBottomAndroid               
+                }}
+            />
+            <AuthStack.Screen 
+                name = "Mechanic"
+                component = {ContactMechanicSupport}
+                options = {{
+
                     headerShown: false,
                     ...TransitionPresets.RevealFromBottomAndroid               
                 }}

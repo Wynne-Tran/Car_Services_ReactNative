@@ -92,21 +92,6 @@ const DrawerContent_Customer = (props) => {
                         onPress = {() => props.navigation.navigate("Services")}
                     />
 
-                    {/* <DrawerItem 
-                        label = "Support"
-                        icon = {({color, size}) => (
-                            <Icon 
-                                type = "material-community"
-                                name = "piggy-bank"
-                                color = {color}
-                                size = {size}
-
-                            />
-                        )}
-                        onPress={() => props.navigation.navigate("Support")}
-                    /> */}
-
-
                     <DrawerItem 
                         label = "History Services"
                         icon = {({color, size}) => (
@@ -134,6 +119,18 @@ const DrawerContent_Customer = (props) => {
                         )}
                         onPress = {() => props.navigation.navigate("Change_Password")}
                     />
+                    <DrawerItem 
+                        label = "Contact Support"
+                        icon = {({color, size}) => (
+                            <Icon 
+                                type = "material-community"
+                                name = "piggy-bank"
+                                color = {color}
+                                size = {size}
+                            />
+                        )}
+                        onPress={() => props.navigation.navigate("Contact_Customer_Support")}
+                    /> 
                     
                 </DrawerContentScrollView>
 
