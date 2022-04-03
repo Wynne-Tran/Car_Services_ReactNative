@@ -32,7 +32,8 @@ const ContactCustomerSupport = (props) => {
             await createSupport(user,email,desc)
             .then(()=> {
                 alert("Support ticket submitted.")
-            }).then(()=> navigation.navigate("Home_Customer"))
+                navigation.goBack()
+            })
         }catch(error){
             alert(error)
         }
@@ -47,6 +48,7 @@ const ContactCustomerSupport = (props) => {
                 setUsers( data2.find(user => user.email === auth.currentUser.email))
               }
             getUsers()
+            
         })
         return unsubscribe;
         

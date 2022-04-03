@@ -30,9 +30,9 @@ const HomeHeader = ({navigation, role}) => {
                     name = "menu"
                     size = {35}
                     color = {colors.cardbackground}
-                    onPress = {() => {
+                    onPress = {
                         navigation.toggleDrawer()
-                    }}
+                    }
                 />
             </View>
             

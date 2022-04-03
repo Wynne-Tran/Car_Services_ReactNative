@@ -32,7 +32,8 @@ const ContactMechanicSupport = (props) => {
             await createSupport(user,email,desc)
             .then(()=> {
                 alert("Support ticket submitted.")
-            }).then(()=> navigation.navigate("Home_Mechanic"))
+                navigation.goBack()
+            })
         }catch(error){
             alert(error)
         }
