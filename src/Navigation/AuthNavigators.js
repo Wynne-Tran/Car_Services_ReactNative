@@ -134,7 +134,11 @@ const AuthNavigators = () => {
                 }}
             />
             <AuthStack.Screen 
+
+                name = "Contact_Mechanic_Support"
+
                 name = "Mechanic"
+
                 component = {ContactMechanicSupport}
                 options = {{
 
