@@ -243,10 +243,11 @@ const Home_Mechanic = ({navigation}) => {
 {
                             bankAccount.map(e => e.mod_approval != "" ? (
                                 <TouchableOpacity style={styles.message_red}
+                                    key = {e.id}
                                     onPress={() => navigation.navigate("Apply_Tasks", {id: e.id})}
                                 >
                                     <ImageBackground source={require('../../../assets/images/info.png')}  style={styles.background2}>
-                                        <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your application is approved !</Text>
+                                        <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your application was approved !</Text>
                                     </ImageBackground>
                                 </TouchableOpacity>
                                 

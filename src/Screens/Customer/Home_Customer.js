@@ -110,10 +110,11 @@ const Home_Customer = ({navigation}) => {
                             ) : 
                             e.mod_approval != "" &&
                             <TouchableOpacity style={styles.message_red}
-                                    onPress={() => navigation.navigate('Confirm_Message')}
+                                    onPress={() => navigation.navigate('History_Detail')}
+                                    key = {e.id}
                                 >
                                     <ImageBackground source={require('../../../assets/images/info.png')}  style={styles.background2}>
-                                        <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your Booking is approved !</Text>
+                                        <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your Booking was approved !</Text>
                                     </ImageBackground>
                                 </TouchableOpacity>
                             )

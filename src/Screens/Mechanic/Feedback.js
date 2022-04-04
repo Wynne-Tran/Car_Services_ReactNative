@@ -54,6 +54,7 @@ const Feedback = ({navigation}) => {
                     {
                         bankAccount.map( e => e.cus_feedback != "" && (
                             <TouchableOpacity
+                            key={e.id}
                             >
                             <View style={styles.announment}>
                                 <View style={{ marginHorizontal: 10}}>
@@ -64,16 +65,16 @@ const Feedback = ({navigation}) => {
                                         
                                     }
                                     {
-                                        parseFloat(e.cus_rate) > 1 || parseFloat(e.cus_rate) <= 2 && <Image style={{marginLeft: -15}} source={require(`../../../assets/images/2_start.png`)}/>
+                                        parseFloat(e.cus_rate) > 1 && parseFloat(e.cus_rate) <= 2 && <Image style={{marginLeft: -15}} source={require(`../../../assets/images/2_start.png`)}/>
                                        
                                     }
                                     {
                                         
-                                        parseFloat(e.cus_rate) > 2 || parseFloat(e.cus_rate) == 3 && <Image style={{marginLeft: -15}} source={require(`../../../assets/images/3_start.png`)}/>
+                                        parseFloat(e.cus_rate) > 2 && parseFloat(e.cus_rate) <= 3 && <Image style={{marginLeft: -15}} source={require(`../../../assets/images/3_start.png`)}/>
                         
                                     }
                                     {
-                                        parseFloat(e.cus_rate) > 3 || parseFloat(e.cus_rate) >= 4 && <Image style={{marginLeft: -15}} source={require(`../../../assets/images/4_start.png`)}/>
+                                        parseFloat(e.cus_rate) > 3 && parseFloat(e.cus_rate) <= 4 && <Image style={{marginLeft: -15}} source={require(`../../../assets/images/4_start.png`)}/>
                                         
                                     }
                                     {

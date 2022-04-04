@@ -41,7 +41,7 @@ const Home_Moderator = ({navigation}) => {
                 const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
                 setCount(0)
                 data2.forEach(countMod => countMod.mod_approval == null ? setCount(count + 1) : null)
-                setBankAccount(data2.filter(e => e.id === route.params.id))
+                //setBankAccount(data2.filter(e => e.id === route.params.id))
             }
             countService()
         })

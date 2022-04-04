@@ -133,7 +133,8 @@ const Approve_Submission = ({navigation, route}) => {
                             )}
 
                             <View style = {{flexDirection: "row", marginLeft: 20, marginHorizontal: 20, marginTop: 50, justifyContent: 'space-evenly'}}>
-                            {count[0].mod_approval != null ? (
+                            {count[0].mod_approval != "" ? (
+                                    
                                     <Button 
                                     title = "Back"
                                     buttonStyle = {styles.buttonSignIn}
