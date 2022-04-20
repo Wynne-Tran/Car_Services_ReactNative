@@ -29,6 +29,8 @@ const Home_Mechanic = ({navigation}) => {
                 const data = await getDocs(serviceCollectionRef)
                 const data2 = data.docs.map((doc) => ({...doc.data(), id: doc.id}))
                 setBankAccount(data2.filter(e => e.mec_email === auth.currentUser.email));
+                setCount(data2.filter(e => e.mec_email === auth.currentUser.email).length)
+
             }
             countService()
         })
@@ -99,7 +101,7 @@ const Home_Mechanic = ({navigation}) => {
                         
                         <View style={{alignItems: 'center'}}>
                             <Text style = {{color: colors.text_white, fontSize:18, marginTop: 10, marginHorizontal: 10}}>
-                                You serviced <Text style={{fontSize: 25, fontWeight: 'bold', color:'red'}}>0</Text> customers !
+                                You serviced <Text style={{fontSize: 25, fontWeight: 'bold', color:'red'}}>{count}</Text> customers !
                             </Text>
                         </View>
                     </View>

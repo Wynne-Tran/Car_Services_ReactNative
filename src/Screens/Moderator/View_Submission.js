@@ -66,7 +66,7 @@ const View_Submission = ({navigation}) => {
                         <Text>Wait...</Text>
 
                         <View style={styles.colorapprove}></View>
-                        <Text>Applied</Text>
+                        <Text>Approved</Text>
                     </View>
                     <View style={{flexDirection:'row'}}>
                         <View style={styles.colorInprocess}></View>

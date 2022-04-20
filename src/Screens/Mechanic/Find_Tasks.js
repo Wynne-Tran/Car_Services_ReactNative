@@ -67,7 +67,7 @@ const Find_Tasks = ({navigation}) => {
                         <Text>Wait...</Text>
 
                         <View style={styles.colorapprove}></View>
-                        <Text>Approved</Text>
+                        <Text>Applied</Text>
                     </View>
                     <View style={{flexDirection:'row'}}>
                         <View style={styles.colorInprocess}></View>

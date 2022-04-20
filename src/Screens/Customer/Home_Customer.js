@@ -101,8 +101,8 @@ const Home_Customer = ({navigation}) => {
                                         key = {e.id}
                                         onPress={() => navigation.navigate('Feedback', {info: e})}
                                     >
-                                        <ImageBackground source={require('../../../assets/images/Green.png')}  style={styles.background2}>
-                                            <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>{e.mec_message}</Text>
+                                        <ImageBackground key = {e.id} source={require('../../../assets/images/Green.png')}  style={styles.background2}>
+                                            <Text key = {e.id} style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>{e.mec_message}</Text>
                                         </ImageBackground>
                                     </TouchableOpacity>
                                 </>
@@ -113,8 +113,8 @@ const Home_Customer = ({navigation}) => {
                                     onPress={() => navigation.navigate('History_Detail')}
                                     key = {e.id}
                                 >
-                                    <ImageBackground source={require('../../../assets/images/info.png')}  style={styles.background2}>
-                                        <Text style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your Booking was approved !</Text>
+                                    <ImageBackground key = {e.id} source={require('../../../assets/images/info.png')}  style={styles.background2}>
+                                        <Text key = {e.id} style={{color: colors.text_white, marginLeft: '20%', fontSize: 14}}>Your Booking was approved !</Text>
                                     </ImageBackground>
                                 </TouchableOpacity>
                             )
