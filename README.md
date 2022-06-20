@@ -1,6 +1,6 @@
 # Car Services Application
 
-This application allows customer to book services online, it also help mechanics to seek an extra job.
+This application allows customers to book services online, it also helps mechanics to seek extra jobs.
 
 
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<img src="https://user-images.githubusercontent.com/63073395/174527257-94b4574c-2fb0-41f7-8bc1-d14a2aa4cae4.png" width="300" style="padding-left:200px" /> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; <img src="https://user-images.githubusercontent.com/63073395/174527485-3f70bacd-3394-4f2a-8556-fe235def2abc.png" width="300" style="padding-left:200px" />
