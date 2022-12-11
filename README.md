@@ -19,6 +19,6 @@ https://www.youtube.com/watch?v=UJVorOa_Oc8
 
 🛰 LinkedIn: https://www.linkedin.com/in/wynne-tran
 
-🌈 Portfolio: https://portfolio-wynne.herokuapp.com
+🌈 Portfolio: https://wynne-tran.netlify.app/
 
 📝 Medium: https://medium.com/@WynneTran
