@@ -12,6 +12,10 @@ Full Project Demo:
 
 https://www.youtube.com/watch?v=UJVorOa_Oc8
 
+Figma design:
+
+https://www.figma.com/file/DnoLkbYyuTlepMQgXeGanY/Car_Pre?type=design&node-id=0-1&t=62LyRMqs2vX9UgAS-0
+
               
 # 🪐 Contact Author
 
